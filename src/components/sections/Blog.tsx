@@ -26,10 +26,11 @@ const Blog = () => {
                   href="https://www.linkedin.com/in/udayan-das-chowdhury8329/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center"
                 >
-                  Follow on LinkedIn
-                  <ExternalLink className="ml-2 h-4 w-4" />
+                  <span className="inline-flex items-center">
+                    Follow on LinkedIn
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </span>
                 </a>
               </Button>
               
@@ -42,7 +43,9 @@ const Blog = () => {
           <div className="mt-10 flex justify-center">
             <Button asChild variant="ghost" className="text-electric-blue hover:text-electric-blue-dark hover:bg-electric-blue/10">
               <a href="#contact">
-                Get in Touch <ArrowRight className="ml-2 h-4 w-4" />
+                <span className="inline-flex items-center">
+                  Get in Touch <ArrowRight className="ml-2 h-4 w-4" />
+                </span>
               </a>
             </Button>
           </div>

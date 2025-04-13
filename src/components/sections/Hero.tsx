@@ -43,10 +43,10 @@ const Hero = () => {
           
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button asChild className="btn-primary">
-              <a href="#projects">Explore Projects</a>
+              <a href="#projects"><span>Explore Projects</span></a>
             </Button>
             <Button asChild variant="outline" className="btn-outline">
-              <a href="#contact">Get in Touch</a>
+              <a href="#contact"><span>Get in Touch</span></a>
             </Button>
           </div>
         </div>

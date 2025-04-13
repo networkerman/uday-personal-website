@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BadgeIndianRupee, BriefcaseBusiness, Building, Award, GraduationCap, Briefcase, Lightbulb, Rocket, ExternalLink, ChevronRight, Users, Target, MessageSquare, Zap } from 'lucide-react';
+import { 
+  BadgeIndianRupee, Building, Award, GraduationCap, Briefcase, 
+  Rocket, ExternalLink, Users, Target, Filter 
+} from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 // Experience type definitions
 interface Experience {
@@ -17,27 +21,19 @@ interface Experience {
   side: 'left' | 'right';
   type: 'work' | 'education' | 'internship' | 'fellowship' | 'entrepreneurial';
   location?: string;
-  metrics?: { value: string; label: string; icon: JSX.Element }[]; // Keep metrics if needed, though not in new data
+  metrics?: { value: string; label: string; icon: JSX.Element }[];
 }
-
-// Year marker for the timeline (Simplified)
-const TimelineYear = ({ year }: { year: number }) => (
-  <div className="relative flex items-center justify-center h-8">
-    <div className="h-2 w-2 rounded-full bg-gray-300 absolute left-1/2 -translate-x-1/2"></div>
-    <span className="absolute left-0 -translate-x-full pr-4 text-sm text-gray-500">{year}</span>
-  </div>
-);
 
 // Get color based on experience type
 const getTypeColor = (type: string) => {
   const colors = {
-    work: 'bg-blue-500/90 text-white',
-    education: 'bg-green-500/90 text-white',
-    internship: 'bg-yellow-500/90 text-white',
-    fellowship: 'bg-orange-500/90 text-white',
-    entrepreneurial: 'bg-purple-500/90 text-white'
+    work: 'bg-blue-500 text-white',
+    education: 'bg-green-500 text-white',
+    internship: 'bg-yellow-500 text-white',
+    fellowship: 'bg-orange-500 text-white',
+    entrepreneurial: 'bg-purple-500 text-white'
   };
-  return colors[type] || 'bg-gray-500/90 text-white';
+  return colors[type] || 'bg-gray-500 text-white';
 };
 
 // Get icon based on experience type
@@ -53,15 +49,17 @@ const getTypeIcon = (type: string) => {
 };
 
 const Experience = () => {
-  // Define the timeline span (reversed to show recent at top)
-  const timelineStartYear = 2013; // Changed to 2013 to include education
-  const timelineEndYear = new Date().getFullYear();
-  const years = Array.from({ length: timelineEndYear - timelineStartYear + 1 }, (_, i) => timelineEndYear - i);
+  // Animation references
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [visibleYear, setVisibleYear] = useState(new Date().getFullYear());
+  
+  // Filter state
+  const [activeTypeFilters, setActiveTypeFilters] = useState<string[]>([]);
+  const [activeSkillFilters, setActiveSkillFilters] = useState<string[]>([]);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [showSkillFilters, setShowSkillFilters] = useState(false);
 
-  // Add filter state
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-
-  // Published articles (Assuming this data is still relevant)
+  // Published articles
   const articles = [
     {
       title: "The End of Truecaller? How India's New Telecom Rules Might Erase It",
@@ -74,7 +72,7 @@ const Experience = () => {
   // Experience data (sorted with most recent first)
   const experiences: Experience[] = [
     {
-      title: "Senior Growth Product Manager", // Moved this up as it's the most recent start date
+      title: "Senior Growth Product Manager",
       organization: "Netcore Cloud",
       startDate: "May 2024",
       endDate: "Present",
@@ -158,7 +156,7 @@ const Experience = () => {
       location: "Gurugram, Haryana, India"
     },
     {
-      title: "Product Analyst Intern", // Corrected timeline order
+      title: "Product Analyst Intern",
       organization: "Navi",
       startDate: "Oct 2020",
       endDate: "Nov 2020",
@@ -166,12 +164,12 @@ const Experience = () => {
         "Conducted user behavior analysis and optimized loan application flow"
       ],
       skills: ["Data Analysis", "User Research", "Process Optimization"],
-      side: "right", // Kept original side, but you might want to alternate more strictly
+      side: "right",
       type: "internship",
       location: "Delhi, India"
     },
     {
-      title: "Product Manager Intern", // Corrected timeline order
+      title: "Product Manager Intern",
       organization: "Brand Bazooka Advertising Pvt. Ltd.",
       startDate: "Jul 2020",
       endDate: "Aug 2020",
@@ -179,12 +177,12 @@ const Experience = () => {
         "Developed a strategic roadmap for LINC Pens"
       ],
       skills: ["Product Strategy", "Market Research", "Roadmapping"],
-      side: "right", // Kept original side
+      side: "right",
       type: "internship",
       location: "Delhi, India"
     },
     {
-      title: "Founder - ProductX Club", // Corrected timeline order
+      title: "Founder - ProductX Club",
       organization: "Birla Institute of Technology and Science, Pilani",
       startDate: "Aug 2019",
       endDate: "Apr 2021",
@@ -193,7 +191,7 @@ const Experience = () => {
         "Curated content, hosted workshops/webinars, and forged strategic partnerships"
       ],
       skills: ["Community Building", "Event Management", "Content Curation"],
-      side: "right", // Swapped side for better alternation
+      side: "right",
       type: "entrepreneurial",
       location: "Pilani, Rajasthan, India"
     },
@@ -221,7 +219,7 @@ const Experience = () => {
         "Implemented security protocols tailored for BFSI"
       ],
       skills: ["Network Configuration", "Security Protocols", "BFSI Domain"],
-      side: "right",
+      side: "left", // Changed from right to left to match other work experiences
       type: "work",
       location: "Pune, Maharashtra, India"
     },
@@ -238,224 +236,396 @@ const Experience = () => {
     },
   ];
 
+  // Extract all unique skills across experiences
+  const allSkills = Array.from(new Set(
+    experiences.flatMap(exp => exp.skills || [])
+  )).sort();
+
   // Filter experiences based on active filters
-  const filteredExperiences = experiences.filter(exp =>
-    activeFilters.length === 0 || activeFilters.includes(exp.type)
-  );
+  const filteredExperiences = experiences.filter(exp => {
+    // Type filter check
+    const typeFilterPassed = activeTypeFilters.length === 0 || activeTypeFilters.includes(exp.type);
+    
+    // Skill filter check
+    const skillFilterPassed = activeSkillFilters.length === 0 || 
+      (exp.skills && exp.skills.some(skill => activeSkillFilters.includes(skill)));
+    
+    return typeFilterPassed && skillFilterPassed;
+  });
+
+  // Toggle type filter function
+  const toggleTypeFilter = (type: string) => {
+    setIsFiltering(true);
+    setActiveTypeFilters(prev => 
+      prev.includes(type) 
+        ? prev.filter(t => t !== type) 
+        : [...prev, type]
+    );
+    
+    // Reset filtering state after animation completes
+    setTimeout(() => setIsFiltering(false), 500);
+  };
+  
+  // Toggle skill filter function
+  const toggleSkillFilter = (skill: string) => {
+    setIsFiltering(true);
+    setActiveSkillFilters(prev => 
+      prev.includes(skill) 
+        ? prev.filter(s => s !== skill) 
+        : [...prev, skill]
+    );
+    
+    // Reset filtering state after animation completes
+    setTimeout(() => setIsFiltering(false), 500);
+  };
+
+  // Determine years in timeline for dynamic year indicator
+  const timelineYears = useMemo(() => {
+    // Extract all unique years from experience start/end dates
+    const years = new Set<number>();
+    experiences.forEach(exp => {
+      // Add start year
+      const startYear = parseInt(exp.startDate.split(' ')[1]);
+      if (!isNaN(startYear)) years.add(startYear);
+      
+      // Add end year (if not 'Present')
+      if (exp.endDate.toLowerCase() !== 'present') {
+        const endYear = parseInt(exp.endDate.split(' ')[1]);
+        if (!isNaN(endYear)) years.add(endYear);
+      } else {
+        // If 'Present', add current year
+        years.add(new Date().getFullYear());
+      }
+    });
+    
+    // Convert to array and sort in descending order (most recent first)
+    return Array.from(years).sort((a, b) => b - a);
+  }, [experiences]);
+  
+  // Set up intersection observer for animations and year tracking
+  useEffect(() => {
+    // Animation observer
+    const animationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-fadeIn');
+            entry.target.classList.add('opacity-100');
+            
+            // Update visible year based on the currently visible experience
+            const yearAttr = entry.target.getAttribute('data-year');
+            if (yearAttr) {
+              setVisibleYear(parseInt(yearAttr));
+            }
+          }
+        });
+      },
+      { threshold: 0.3, rootMargin: "-100px 0px -100px 0px" }
+    );
+
+    // Select all timeline items
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    timelineItems.forEach((item) => {
+      item.classList.add('opacity-0');
+      animationObserver.observe(item);
+    });
+
+    return () => {
+      timelineItems.forEach((item) => animationObserver.unobserve(item));
+    };
+  }, []);
 
   return (
-    <section id="experience" className="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section id="experience" className="py-20 bg-gradient-to-b from-white to-slate-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Professional Journey</h2>
-        <div className="w-20 h-1 bg-blue-500 mx-auto mb-8"></div>
-        <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-          A timeline of diverse experiences spanning product management, entrepreneurship, and continuous learning.
-        </p>
-
-        {/* Filter buttons */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {['work', 'education', 'internship', 'fellowship', 'entrepreneurial'].map(type => (
-            <Button
-              key={type}
-              variant={activeFilters.includes(type) ? "default" : "ghost"}
-              size="sm"
-              onClick={() => {
-                setActiveFilters(prev =>
-                  prev.includes(type)
-                    ? prev.filter(t => t !== type)
-                    : [...prev, type]
-                );
-              }}
-              className="flex items-center gap-1.5"
-            >
-              <span className="flex items-center gap-1.5">
-                {getTypeIcon(type)}
-                <span className="capitalize">{type}</span>
-              </span>
-            </Button>
-          ))}
-          {activeFilters.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setActiveFilters([])}
-            >
-              <span>Clear Filters</span>
-            </Button>
-          )}
-        </div>
-
-        {/* Timeline */}
-        <div className="relative max-w-7xl mx-auto">
-          {/* Center Line */}
-          <div className="absolute left-1/2 h-full w-px bg-gray-200 transform -translate-x-1/2" />
-
-          {/* Years and Experiences */}
-          <div className="relative">
-            {years.map(year => (
-              <div key={year} className="mb-8">
-                <TimelineYear year={year} />
-                
-                {/* Experiences for this year */}
-                <div className="relative">
-                  {filteredExperiences
-                    .filter(exp => {
-                      const startYear = parseInt(exp.startDate.split(' ')[1] || exp.startDate);
-                      const endYear = exp.endDate === 'Present' 
-                        ? new Date().getFullYear() 
-                        : parseInt(exp.endDate.split(' ')[1] || exp.endDate);
-                      return startYear === year || endYear === year;
-                    })
-                    .map((exp, index) => (
-                      <div
-                        key={`${exp.organization}-${index}`}
-                        className={cn(
-                          'absolute w-[45%] mb-8',
-                          exp.side === 'left' ? 'left-0 pr-8' : 'right-0 pl-8'
-                        )}
-                      >
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <button
-                              type="button"
-                              className={cn(
-                                'w-full p-4 rounded-lg shadow-lg transition-all duration-300 cursor-pointer text-white',
-                                getTypeColor(exp.type)
-                              )}
-                            >
-                              <div className="flex items-center gap-2 mb-2">
-                                {getTypeIcon(exp.type)}
-                                <span className="text-sm font-medium capitalize">{exp.type}</span>
-                              </div>
-                              <h3 className="font-bold text-lg">{exp.title}</h3>
-                              <p className="text-sm opacity-90">{exp.organization}</p>
-                              <p className="text-xs mt-1">
-                                {exp.startDate} — {exp.endDate}
-                              </p>
-                            </button>
-                          </HoverCardTrigger>
-                          
-                          <HoverCardContent
-                            side={exp.side === 'left' ? 'right' : 'left'}
-                            className="w-80 p-0"
-                          >
-                            <ScrollArea className="h-[300px]">
-                              <div className={cn(
-                                'p-4 text-white',
-                                getTypeColor(exp.type)
-                              )}>
-                                <h4 className="font-bold text-lg">{exp.title}</h4>
-                                <p className="text-sm">{exp.organization}</p>
-                                <p className="text-xs mt-1">
-                                  {exp.startDate} — {exp.endDate}
-                                </p>
-                              </div>
-                              
-                              <div className="p-4">
-                                <div className="space-y-2">
-                                  {exp.description.map((desc, i) => (
-                                    <p key={i} className="text-sm flex items-start gap-2">
-                                      <ChevronRight className="h-4 w-4 mt-1 flex-shrink-0" />
-                                      {desc}
-                                    </p>
-                                  ))}
-                                </div>
-                                
-                                {exp.skills && (
-                                  <div className="mt-4">
-                                    <h5 className="text-sm font-semibold mb-2">Skills & Tools</h5>
-                                    <div className="flex flex-wrap gap-2">
-                                      {exp.skills.map((skill, i) => (
-                                        <span
-                                          key={i}
-                                          className="text-xs px-2 py-1 bg-gray-100 rounded-full"
-                                        >
-                                          {skill}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                                
-                                {exp.metrics && (
-                                  <div className="mt-4 flex gap-4">
-                                    {exp.metrics.map((metric, i) => (
-                                      <div
-                                        key={i}
-                                        className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded"
-                                      >
-                                        {metric.icon}
-                                        <div>
-                                          <div className="font-bold text-sm">{metric.value}</div>
-                                          <div className="text-xs text-gray-500">{metric.label}</div>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </ScrollArea>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Legend */}
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-12" role="list" aria-label="Experience types"> {/* Increased mt */}
+        <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center">Experience</h2>
+        <div className="w-20 h-1 bg-electric-blue mx-auto mb-6"></div>
+        
+        {/* Filter Controls */}
+        <div className="flex flex-wrap justify-center gap-3 mb-10 max-w-2xl mx-auto">
           {[
-            { type: 'work', label: 'Work' }, // Shortened labels
+            { type: 'work', label: 'Work' },
             { type: 'education', label: 'Education' },
             { type: 'internship', label: 'Internship' },
             { type: 'fellowship', label: 'Fellowship' },
             { type: 'entrepreneurial', label: 'Entrepreneurial' }
           ].map((item) => (
-            <div key={item.type} className="flex items-center gap-1.5" role="listitem">
-              <div
-                className={`h-3 w-3 rounded-sm ${getTypeColor(item.type).split(' ')[0]}`} // Changed to square
-                aria-hidden="true"
-              ></div>
-              <span className="text-xs text-gray-700 font-medium">{item.label}</span> {/* Added font-medium */}
+            <Badge 
+              key={item.type} 
+              variant={activeTypeFilters.includes(item.type) ? "default" : "outline"}
+              className={cn(
+                "cursor-pointer transition-all duration-300 py-1.5 px-3",
+                activeTypeFilters.includes(item.type) 
+                  ? getTypeColor(item.type) 
+                  : "hover:border-gray-400"
+              )}
+              onClick={() => toggleTypeFilter(item.type)}
+            >
+              <span className="flex items-center gap-1.5">
+                {getTypeIcon(item.type)}
+                {item.label}
+              </span>
+            </Badge>
+          ))}
+          <Badge
+            variant="outline"
+            className={cn(
+              "cursor-pointer py-1.5 px-3 transition-all",
+              showSkillFilters ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-gray-100"
+            )}
+            onClick={() => setShowSkillFilters(prev => !prev)}
+          >
+            <span className="flex items-center gap-1.5">
+              <Filter className="h-4 w-4" />
+              {showSkillFilters ? "Hide Skills" : "Filter by Skills"}
+            </span>
+          </Badge>
+          
+          {(activeTypeFilters.length > 0 || activeSkillFilters.length > 0) && (
+            <Badge 
+              variant="outline"
+              className="cursor-pointer hover:bg-gray-100 py-1.5 px-3"
+              onClick={() => {
+                setActiveTypeFilters([]);
+                setActiveSkillFilters([]);
+              }}
+            >
+              <span className="flex items-center gap-1.5">
+                <Filter className="h-4 w-4" />
+                Clear
+              </span>
+            </Badge>
+          )}
+        </div>
+        
+        {/* Skill filter UI */}
+        {showSkillFilters && (
+          <div className="mb-10 mt-4 max-w-3xl mx-auto">
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+              <h3 className="text-sm font-medium mb-3 text-gray-700">Filter by Skills</h3>
+              <div className="flex flex-wrap gap-2">
+                {allSkills.map(skill => (
+                  <Badge
+                    key={skill}
+                    variant={activeSkillFilters.includes(skill) ? "default" : "outline"}
+                    className={cn(
+                      "cursor-pointer text-xs py-1 px-2",
+                      activeSkillFilters.includes(skill) 
+                        ? "bg-electric-blue hover:bg-electric-blue/90" 
+                        : "hover:bg-gray-100"
+                    )}
+                    onClick={() => toggleSkillFilter(skill)}
+                  >
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modern Timeline */}
+        <div 
+          ref={timelineRef} 
+          className={cn(
+            "relative max-w-5xl mx-auto transition-all duration-500",
+            isFiltering ? "opacity-50 scale-98" : "opacity-100 scale-100"
+          )}
+        >
+          {/* Fixed Year Indicators */}
+          <div className="sticky top-20 h-0 z-10 pointer-events-none">
+            <div className="absolute left-1/2 transform -translate-x-1/2 bg-white shadow-sm border border-gray-200 rounded-full px-4 py-1 text-sm font-medium text-gray-700 transition-all duration-300">
+              {/* If the visible year is the current year or any item has 'Present' as end date, show 'Present (YEAR)' */}
+              {visibleYear === new Date().getFullYear() ? 
+                `Present (${new Date().getFullYear()})` : visibleYear}
+            </div>
+          </div>
+          
+          {/* Central line */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 transform -translate-x-1/2"></div>
+          
+          {/* Timeline items */}
+          {filteredExperiences.map((exp, index) => (
+            <div 
+              key={`${exp.organization}-${exp.title}`}
+              data-year={exp.endDate === 'Present' ? new Date().getFullYear() : parseInt(exp.startDate.split(' ')[1]) || new Date().getFullYear()}
+              className={cn(
+                "timeline-item relative mb-12 transition-all duration-500 ease-in-out",
+                // Force education to right, work to left, others follow their set side
+                exp.type === 'education' ? "pl-12 md:pr-0 md:pl-[50%]" : 
+                exp.type === 'work' ? "pr-12 md:pl-0 md:pr-[50%]" : 
+                exp.side === "left" ? "pr-12 md:pl-0 md:pr-[50%]" : "pl-12 md:pr-0 md:pl-[50%]",
+                "transform hover:scale-[1.01] hover:z-10",
+                "will-change-transform" // For better parallax performance
+              )}
+              style={{
+                transform: exp.side === "left" ? "translateX(-5px)" : "translateX(5px)", // Subtle initial offset for parallax effect
+              }}
+              onMouseEnter={(e) => {
+                // Subtle parallax hover effect
+                const el = e.currentTarget;
+                el.style.transform = exp.side === "left" ? "translateX(-2px)" : "translateX(2px)";
+              }}
+              onMouseLeave={(e) => {
+                // Reset parallax effect
+                const el = e.currentTarget;
+                el.style.transform = exp.side === "left" ? "translateX(-5px)" : "translateX(5px)";
+              }}
+            >
+              {/* Connector dot */}
+              <div className="absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-1/3">
+                <div className={cn(
+                  "w-4 h-4 rounded-full border-2 border-white",
+                  getTypeColor(exp.type).split(' ')[0], // Just take the background color
+                  "shadow-md"
+                )}>
+                </div>
+              </div>
+              
+              {/* Content card */}
+              <HoverCard openDelay={200} closeDelay={100}>
+                <HoverCardTrigger asChild>
+                  <div 
+                    className={cn(
+                      "relative bg-white p-5 rounded-lg shadow-sm border border-gray-100",
+                      "hover:shadow-md transition-shadow duration-300",
+                      exp.side === "right" && "md:ml-10",
+                      exp.side === "left" && "md:mr-10"
+                    )}
+                  >
+                    {/* Type badge */}
+                    <div className="absolute -top-3 right-3">
+                      <span className={cn(
+                        "text-xs font-medium px-2 py-1 rounded",
+                        getTypeColor(exp.type)
+                      )}>
+                        {exp.type.charAt(0).toUpperCase() + exp.type.slice(1)}
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-lg font-bold mb-1">{exp.title}</h3>
+                    <h4 className="text-md font-medium text-gray-700 mb-1">{exp.organization}</h4>
+                    
+                    <div className="flex items-center text-sm text-gray-500 mb-3">
+                      <span>{exp.startDate} - {exp.endDate}</span>
+                      {exp.location && (
+                        <>
+                          <span className="mx-2">•</span>
+                          <span>{exp.location}</span>
+                        </>
+                      )}
+                    </div>
+                    
+                    {exp.metrics && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {exp.metrics.map((metric, idx) => (
+                          <div key={idx} className="flex items-center gap-1.5 bg-gray-50 rounded-full px-3 py-1 text-sm">
+                            {metric.icon}
+                            <span className="font-medium">{metric.value}</span>
+                            <span className="text-gray-500 text-xs">{metric.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Show only first line of description on the main card */}
+                    <p className="text-gray-600 line-clamp-2">
+                      {exp.description[0]}
+                    </p>
+                  </div>
+                </HoverCardTrigger>
+                
+                <HoverCardContent side="right" className="w-80">
+                  <ScrollArea className="h-80">
+                    <div className="p-2">
+                      <h3 className="text-lg font-bold mb-1">{exp.title}</h3>
+                      <h4 className="text-md font-medium text-gray-700 mb-1">{exp.organization}</h4>
+                      
+                      <div className="text-sm text-gray-500 mb-3">
+                        <div>{exp.startDate} - {exp.endDate}</div>
+                        {exp.location && <div>{exp.location}</div>}
+                      </div>
+                      
+                      <Separator className="my-2" />
+                      
+                      <div className="mt-3">
+                        <h5 className="text-sm font-semibold mb-2">Overview</h5>
+                        <ul className="list-disc pl-4 space-y-1.5">
+                          {exp.description.map((desc, idx) => (
+                            <li key={idx} className="text-gray-600 text-sm">{desc}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      {exp.skills && exp.skills.length > 0 && (
+                        <div className="mt-4">
+                          <h5 className="text-sm font-semibold mb-2">Skills & Technologies</h5>
+                          <div className="flex flex-wrap gap-1.5">
+                            {exp.skills.map((skill, idx) => (
+                              <Badge key={idx} variant="secondary" className="bg-gray-100">
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {exp.metrics && (
+                        <div className="mt-4">
+                          <h5 className="text-sm font-semibold mb-2">Key Metrics</h5>
+                          <div className="grid grid-cols-2 gap-2">
+                            {exp.metrics.map((metric, idx) => (
+                              <div key={idx} className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded">
+                                {metric.icon}
+                                <div>
+                                  <div className="font-bold text-sm">{metric.value}</div>
+                                  <div className="text-xs text-gray-500">{metric.label}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                </HoverCardContent>
+              </HoverCard>
             </div>
           ))}
         </div>
-
-        <div className="mt-4 text-center text-xs text-gray-500">
-          Hover over items for details. Filters apply to the timeline.
-        </div>
-
+        
         {/* Articles Section */}
-        <div className="mt-20 max-w-3xl mx-auto"> {/* Increased mt */}
-          <h3 className="text-2xl font-bold mb-6 text-center">Recent Articles</h3>
+        {articles.length > 0 && (
+          <div className="mt-20 max-w-3xl mx-auto">
+            <h3 className="text-2xl font-bold mb-6 text-center">Recent Articles</h3>
 
-          <div className="grid gap-6">
-            {articles.map((article, index) => (
-              <article key={index} className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-300">
-                <h4 className="text-lg font-semibold mb-2 text-gray-800">{article.title}</h4> {/* Darker text */}
-                <p className="text-sm text-gray-500 mb-3">Published: {article.date}</p>
-                <p className="text-sm text-gray-700 mb-4">{article.summary}</p>
-                <Button asChild variant="link" size="sm" className="text-blue-600 hover:text-blue-700 p-0 h-auto"> {/* Changed to link variant */}
-                  <a
-                    href={article.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center" // Removed justify-center for left alignment
-                    aria-label={`Read ${article.title} on LinkedIn`}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      Read on LinkedIn
-                      <ExternalLink className="h-4 w-4" aria-hidden="true" /> {/* Adjusted margin */}
-                    </span>
-                  </a>
-                </Button>
-              </article>
-            ))}
+            <div className="grid gap-6">
+              {articles.map((article, index) => (
+                <article 
+                  key={index} 
+                  className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-300"
+                >
+                  <h4 className="text-lg font-semibold mb-2 text-gray-800">{article.title}</h4>
+                  <p className="text-sm text-gray-500 mb-3">Published: {article.date}</p>
+                  <p className="text-sm text-gray-700 mb-4">{article.summary}</p>
+                  <Button asChild variant="link" size="sm" className="text-blue-600 hover:text-blue-700 p-0 h-auto">
+                    <a
+                      href={article.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Read ${article.title} on LinkedIn`}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        Read on LinkedIn
+                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                      </span>
+                    </a>
+                  </Button>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
