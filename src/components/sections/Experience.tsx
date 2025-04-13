@@ -268,8 +268,10 @@ const Experience = () => {
               }}
               className="flex items-center gap-1.5"
             >
-              {getTypeIcon(type)}
-              <span className="capitalize">{type}</span>
+              <span className="flex items-center gap-1.5">
+                {getTypeIcon(type)}
+                <span className="capitalize">{type}</span>
+              </span>
             </Button>
           ))}
           {activeFilters.length > 0 && (
@@ -278,7 +280,7 @@ const Experience = () => {
               size="sm"
               onClick={() => setActiveFilters([])}
             >
-              Clear Filters
+              <span>Clear Filters</span>
             </Button>
           )}
         </div>
@@ -314,9 +316,10 @@ const Experience = () => {
                       >
                         <HoverCard>
                           <HoverCardTrigger asChild>
-                            <div
+                            <button
+                              type="button"
                               className={cn(
-                                'p-4 rounded-lg shadow-lg transition-all duration-300 cursor-pointer text-white',
+                                'w-full p-4 rounded-lg shadow-lg transition-all duration-300 cursor-pointer text-white',
                                 getTypeColor(exp.type)
                               )}
                             >
@@ -329,7 +332,7 @@ const Experience = () => {
                               <p className="text-xs mt-1">
                                 {exp.startDate} — {exp.endDate}
                               </p>
-                            </div>
+                            </button>
                           </HoverCardTrigger>
                           
                           <HoverCardContent
@@ -443,8 +446,10 @@ const Experience = () => {
                     className="inline-flex items-center" // Removed justify-center for left alignment
                     aria-label={`Read ${article.title} on LinkedIn`}
                   >
-                    Read on LinkedIn
-                    <ExternalLink className="ml-1.5 h-4 w-4" aria-hidden="true" /> {/* Adjusted margin */}
+                    <span className="flex items-center gap-1.5">
+                      Read on LinkedIn
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" /> {/* Adjusted margin */}
+                    </span>
                   </a>
                 </Button>
               </article>
