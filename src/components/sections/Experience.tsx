@@ -2,234 +2,66 @@ import { useState } from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BadgeIndianRupee, BriefcaseBusiness, Building, Award, GraduationCap, Briefcase, Lightbulb, Rocket, ExternalLink } from 'lucide-react';
+import { BadgeIndianRupee, BriefcaseBusiness, Building, Award, GraduationCap, Briefcase, Lightbulb, Rocket, ExternalLink, ChevronRight, Users, Target, MessageSquare, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 // Experience type definitions
-interface BaseExperience {
+interface Experience {
   title: string;
   organization: string;
   startDate: string;
   endDate: string;
-  description: string;
+  description: string[];
   skills?: string[];
   side: 'left' | 'right';
   type: 'work' | 'education' | 'internship' | 'fellowship' | 'entrepreneurial';
-  metrics?: { value: string; label: string; icon: JSX.Element }[];
-  verticalOffset?: number;
+  location?: string;
+  metrics?: { value: string; label: string; icon: JSX.Element }[]; // Keep metrics if needed, though not in new data
 }
 
-// Year marker for the timeline
-const TimelineYear = ({ year, isActive }: { year: number; isActive: boolean }) => (
-  <div className="relative">
-    <div className={`h-4 w-4 rounded-full ${isActive ? 'bg-electric-blue shadow-lg shadow-electric-blue/50' : 'bg-gray-300'} absolute left-1/2 -translate-x-1/2`}></div>
-    <div className="text-xs font-medium text-gray-500 absolute -left-6 transform -translate-x-100">{year}</div>
+// Year marker for the timeline (Simplified)
+const TimelineYear = ({ year }: { year: number }) => (
+  <div className="relative flex items-center justify-center h-8">
+    <div className="h-2 w-2 rounded-full bg-gray-300 absolute left-1/2 -translate-x-1/2"></div>
+    <span className="absolute left-0 -translate-x-full pr-4 text-sm text-gray-500">{year}</span>
   </div>
 );
 
-// Calculate position based on date range and timeline span
-const calculatePosition = (startDate: string, endDate: string, timelineStart: number, timelineEnd: number) => {
-  const startDateObj = new Date(startDate);
-  const endDateObj = endDate === 'Present' ? new Date() : new Date(endDate);
-  
-  const totalMonths = (timelineEnd - timelineStart) * 12;
-  const startMonths = ((startDateObj.getFullYear() - timelineStart) * 12) + startDateObj.getMonth();
-  const endMonths = ((endDateObj.getFullYear() - timelineStart) * 12) + endDateObj.getMonth();
-  
-  // Reverse the position calculation to show recent items at top
-  const startPercent = 100 - ((startMonths / totalMonths) * 100);
-  const endPercent = 100 - ((endMonths / totalMonths) * 100);
-  const height = Math.abs(endPercent - startPercent);
-  
-  return { 
-    top: `${Math.min(startPercent, endPercent)}%`,
-    height: `${height}%`
-  };
-};
-
 // Get color based on experience type
 const getTypeColor = (type: string) => {
-  switch (type) {
-    case 'work':
-      return 'bg-blue-500/90 text-white border-blue-500/30';
-    case 'education':
-      return 'bg-red-500/90 text-white border-red-500/30';
-    case 'internship':
-      return 'bg-green-500/90 text-white border-green-500/30';
-    case 'fellowship':
-      return 'bg-purple-500/90 text-white border-purple-500/30';
-    case 'entrepreneurial':
-      return 'bg-orange-500/90 text-white border-orange-500/30';
-    default:
-      return 'bg-gray-500/90 text-white border-gray-500/30';
-  }
+  const colors = {
+    work: 'bg-blue-500/90 text-white',
+    education: 'bg-green-500/90 text-white',
+    internship: 'bg-yellow-500/90 text-white',
+    fellowship: 'bg-orange-500/90 text-white',
+    entrepreneurial: 'bg-purple-500/90 text-white'
+  };
+  return colors[type] || 'bg-gray-500/90 text-white';
 };
 
 // Get icon based on experience type
 const getTypeIcon = (type: string) => {
-  switch (type) {
-    case 'work':
-      return <Briefcase className="h-4 w-4" />;
-    case 'education':
-      return <GraduationCap className="h-4 w-4" />;
-    case 'internship':
-      return <Building className="h-4 w-4" />;
-    case 'fellowship':
-      return <Award className="h-4 w-4" />;
-    case 'entrepreneurial':
-      return <Rocket className="h-4 w-4" />;
-    default:
-      return <Lightbulb className="h-4 w-4" />;
-  }
+  const icons = {
+    work: <Briefcase className="h-4 w-4" />,
+    education: <GraduationCap className="h-4 w-4" />,
+    internship: <Building className="h-4 w-4" />,
+    fellowship: <Award className="h-4 w-4" />,
+    entrepreneurial: <Rocket className="h-4 w-4" />
+  };
+  return icons[type] || <Briefcase className="h-4 w-4" />;
 };
 
 const Experience = () => {
   // Define the timeline span (reversed to show recent at top)
-  const timelineStart = 2013;
-  const timelineEnd = 2024;
-  const years = Array.from({ length: timelineEnd - timelineStart + 1 }, (_, i) => timelineEnd - i);
-  
-  // Year visibility state for animation
-  const [visibleYears, setVisibleYears] = useState<number[]>([timelineEnd]);
-  
-  // Experience data (sorted with most recent first)
-  const experiences: BaseExperience[] = [
-    // Most Recent Experiences First
-    {
-      title: "GrowthX Fellow",
-      organization: "GrowthX®",
-      startDate: "Feb 2024",
-      endDate: "Present",
-      description: "Engaged in a fellowship focused on Go-to-Market strategy and growth models with product leaders.",
-      skills: ["Go-to-Market Strategy", "Growth Hacking", "Product Management"],
-      side: "left",
-      type: "fellowship"
-    },
-    {
-      title: "Senior Product Manager",
-      organization: "Netcore Cloud",
-      startDate: "Mar 2023",
-      endDate: "Present",
-      description: "Led the WhatsApp Ecosystem development, launching Magic Cart Checkout and boosting client engagement.",
-      skills: ["Teamwork", "Go-to-Market Strategy", "Product Management"],
-      side: "left",
-      type: "work",
-      metrics: [
-        { value: '₹100 CR', label: 'ARR', icon: <BadgeIndianRupee className="h-4 w-4" /> },
-        { value: '22%', label: 'QoQ Growth', icon: <BriefcaseBusiness className="h-4 w-4" /> }
-      ]
-    },
-    {
-      title: "Product Manager",
-      organization: "Netcore Cloud",
-      startDate: "Aug 2021",
-      endDate: "Mar 2023",
-      description: "Built the Journey Automation Platform, scaling WhatsApp revenue from ₹24 CR to ₹52 CR ARR with innovative features.",
-      skills: ["Product Strategy", "Stakeholder Management", "Customer Journeys"],
-      side: "left",
-      type: "work",
-      metrics: [
-        { value: '₹45 CR', label: 'ARR', icon: <BadgeIndianRupee className="h-4 w-4" /> },
-        { value: '18%', label: 'QoQ Growth', icon: <BriefcaseBusiness className="h-4 w-4" /> }
-      ]
-    },
-    {
-      title: "Product Consultant",
-      organization: "Capgemini Invent (BYJU'S Client)",
-      startDate: "Jan 2021",
-      endDate: "Aug 2021",
-      description: "Partnered with BYJU'S to enhance digital learning solutions, improving user engagement and scalability.",
-      skills: ["Go-to-Market Strategy", "Stakeholder Management", "Product Management"],
-      side: "left",
-      type: "work"
-    },
-    {
-      title: "Product Analyst Intern",
-      organization: "Navi",
-      startDate: "Oct 2020",
-      endDate: "Nov 2020",
-      description: "Analyzed user behavior to optimize loan application flows and inform product decisions.",
-      skills: ["Competitive Assessment", "Problem Solving"],
-      side: "left",
-      type: "internship",
-      verticalOffset: -120
-    },
-    {
-      title: "Product Manager Intern",
-      organization: "Brand Bazooka Advertising Pvt. Ltd.",
-      startDate: "Jul 2020",
-      endDate: "Aug 2020",
-      description: "Developed the product strategy roadmap for LINC Pens, enhancing brand positioning.",
-      skills: ["Competitive Assessment", "Stakeholder Management", "Key Performance Indicators"],
-      side: "left",
-      type: "internship",
-      verticalOffset: -70
-    },
-    {
-      title: "MBA-Tech, Finance & Marketing",
-      organization: "BITS Pilani",
-      startDate: "Jun 2019",
-      endDate: "May 2021",
-      description: "Graduated as Silver Medalist, specializing in product management and marketing strategies.",
-      side: "right",
-      type: "education",
-      verticalOffset: -50
-    },
-    {
-      title: "Founder - ProductX Club",
-      organization: "BITS Pilani",
-      startDate: "Aug 2019",
-      endDate: "Apr 2021",
-      description: "Created a community for product enthusiasts, organizing workshops and fostering industry connections.",
-      skills: ["Presentation Skills", "Problem Solving"],
-      side: "left",
-      type: "entrepreneurial",
-      verticalOffset: -110
-    },
-    {
-      title: "Assistant Product Marketing Manager",
-      organization: "Ola Electric",
-      startDate: "Jun 2018",
-      endDate: "Jul 2019",
-      description: "Supported M&A due diligence for Etergo acquisition and collaborated on go-to-market strategies for Ola S1 e-scooter.",
-      skills: ["Problem Solving"],
-      side: "left",
-      type: "work"
-    },
-    {
-      title: "Network Engineer",
-      organization: "Cisco",
-      startDate: "Jan 2016",
-      endDate: "Jun 2016",
-      description: "Configured routers and implemented security protocols for BFSI clients, gaining hands-on technical experience.",
-      skills: ["Problem Solving"],
-      side: "left",
-      type: "internship"
-    },
-    {
-      title: "Bachelor's in Electronics & Telecommunications Engineering",
-      organization: "VIIT, Pune",
-      startDate: "Aug 2013",
-      endDate: "May 2017",
-      description: "Completed with First Class Distinction, building a strong technical foundation.",
-      side: "right",
-      type: "education"
-    }
-  ];
+  const timelineStartYear = 2013; // Changed to 2013 to include education
+  const timelineEndYear = new Date().getFullYear();
+  const years = Array.from({ length: timelineEndYear - timelineStartYear + 1 }, (_, i) => timelineEndYear - i);
 
-  // Handle scroll to show years progressively
-  const handleTimelineScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const container = e.currentTarget;
-    const scrollPosition = container.scrollTop;
-    const containerHeight = container.clientHeight;
-    const scrollRatio = scrollPosition / (container.scrollHeight - containerHeight);
-    
-    // Calculate which years should be visible based on scroll position
-    const visibleCount = Math.max(1, Math.floor(scrollRatio * years.length) + 1);
-    setVisibleYears(years.slice(0, visibleCount));
-  };
+  // Add filter state
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  // Published articles
+  // Published articles (Assuming this data is still relevant)
   const articles = [
     {
       title: "The End of Truecaller? How India's New Telecom Rules Might Erase It",
@@ -238,174 +70,384 @@ const Experience = () => {
       link: "https://www.linkedin.com/pulse/end-truecaller-indias-new-telecom-rules-might-erase-das-chowdhury-5ei4f/"
     }
   ];
-  
+
+  // Experience data (sorted with most recent first)
+  const experiences: Experience[] = [
+    {
+      title: "Senior Growth Product Manager", // Moved this up as it's the most recent start date
+      organization: "Netcore Cloud",
+      startDate: "May 2024",
+      endDate: "Present",
+      description: [
+        "Driving 10X growth through Product-Led Growth strategies",
+        "Building scalable growth engines and aligning cross-functional teams to a unified, user-driven vision"
+      ],
+      skills: ["Product-Led Growth", "Growth Strategy", "Team Leadership"],
+      side: "left",
+      type: "work",
+      location: "Mumbai, Maharashtra, India",
+      metrics: [
+        { value: '10X', label: 'Growth Target', icon: <Target className="h-4 w-4" /> },
+        { value: 'PLG', label: 'Strategy', icon: <Users className="h-4 w-4" /> }
+      ]
+    },
+    {
+      title: "GrowthX Fellow",
+      organization: "GrowthX®",
+      startDate: "Feb 2024",
+      endDate: "Present",
+      description: [
+        "Developed expertise in Go-to-Market strategy, growth hacking, and PLG",
+        "Collaborated with top product leaders to refine experimental and monetization techniques"
+      ],
+      skills: ["Go-to-Market Strategy", "Growth Hacking", "Product-Led Growth"],
+      side: "right",
+      type: "fellowship",
+      location: ""
+    },
+    {
+      title: "Senior Product Manager",
+      organization: "Netcore Cloud",
+      startDate: "Mar 2023",
+      endDate: "May 2024",
+      description: [
+        "Spearheaded the WhatsApp Ecosystem, establishing Netcore as a market leader",
+        "Designed Magic Cart Checkout and Cart Abandonment journeys",
+        "Integrated WhatsApp Payments into ROI dashboards and launched a chatbot platform"
+      ],
+      skills: ["WhatsApp Business API", "Product Strategy", "Team Leadership"],
+      side: "left",
+      type: "work",
+      location: "Mumbai, Maharashtra, India",
+      metrics: [
+        { value: '₹100 CR', label: 'ARR Impact', icon: <BadgeIndianRupee className="h-4 w-4" /> },
+        { value: '22%', label: 'QoQ Growth', icon: <Target className="h-4 w-4" /> }
+      ]
+    },
+    {
+      title: "Product Manager",
+      organization: "Netcore Cloud",
+      startDate: "Aug 2021",
+      endDate: "Mar 2023",
+      description: [
+        "Built a scalable Journey Automation Platform integrating WhatsApp, Viber, RCS, and Zalo",
+        "Led integration of WhatsApp into the Campaign Module and delivered interactive features",
+        "Rolled out deflector APIs and attribution dashboards"
+      ],
+      skills: ["Product Management", "API Integration", "Technical Leadership"],
+      side: "left",
+      type: "work",
+      location: "Gurugram, Haryana, India",
+      metrics: [
+        { value: '₹45 CR', label: 'ARR Impact', icon: <BadgeIndianRupee className="h-4 w-4" /> },
+        { value: '18%', label: 'QoQ Growth', icon: <Target className="h-4 w-4" /> }
+      ]
+    },
+    {
+      title: "Product Consultant",
+      organization: "Capgemini Invent (BYJU'S Client)",
+      startDate: "Jan 2021",
+      endDate: "Aug 2021",
+      description: [
+        "Enhanced digital learning UX and engagement for BYJU'S",
+        "Aligned product, engineering, and business teams to improve scalability"
+      ],
+      skills: ["Product Strategy", "UX Design", "Team Alignment"],
+      side: "left",
+      type: "work",
+      location: "Gurugram, Haryana, India"
+    },
+    {
+      title: "Product Analyst Intern", // Corrected timeline order
+      organization: "Navi",
+      startDate: "Oct 2020",
+      endDate: "Nov 2020",
+      description: [
+        "Conducted user behavior analysis and optimized loan application flow"
+      ],
+      skills: ["Data Analysis", "User Research", "Process Optimization"],
+      side: "right", // Kept original side, but you might want to alternate more strictly
+      type: "internship",
+      location: "Delhi, India"
+    },
+    {
+      title: "Product Manager Intern", // Corrected timeline order
+      organization: "Brand Bazooka Advertising Pvt. Ltd.",
+      startDate: "Jul 2020",
+      endDate: "Aug 2020",
+      description: [
+        "Developed a strategic roadmap for LINC Pens"
+      ],
+      skills: ["Product Strategy", "Market Research", "Roadmapping"],
+      side: "right", // Kept original side
+      type: "internship",
+      location: "Delhi, India"
+    },
+    {
+      title: "Founder - ProductX Club", // Corrected timeline order
+      organization: "Birla Institute of Technology and Science, Pilani",
+      startDate: "Aug 2019",
+      endDate: "Apr 2021",
+      description: [
+        "Established a vibrant community for product managers and enthusiasts",
+        "Curated content, hosted workshops/webinars, and forged strategic partnerships"
+      ],
+      skills: ["Community Building", "Event Management", "Content Curation"],
+      side: "right", // Swapped side for better alternation
+      type: "entrepreneurial",
+      location: "Pilani, Rajasthan, India"
+    },
+    {
+      title: "Assistant Product Marketing Manager",
+      organization: "Ola Electric",
+      startDate: "Jun 2018",
+      endDate: "Jul 2019",
+      description: [
+        "Conducted due diligence and synergy analysis for the acquisition of Etergo (foundation for Ola S1)",
+        "Collaborated with Bhavish Aggarwal on GTM strategy and product positioning"
+      ],
+      skills: ["Product Marketing", "GTM Strategy", "Market Analysis"],
+      side: "left",
+      type: "work",
+      location: "Pune, Maharashtra, India"
+    },
+    {
+      title: "Network Engineer",
+      organization: "Cisco",
+      startDate: "Jan 2017",
+      endDate: "Jun 2018",
+      description: [
+        "Configured routers for BFSI clients (Cisco series 17XX, 18XX, 19XX, 21XX, 36XX)",
+        "Implemented security protocols tailored for BFSI"
+      ],
+      skills: ["Network Configuration", "Security Protocols", "BFSI Domain"],
+      side: "right",
+      type: "work",
+      location: "Pune, Maharashtra, India"
+    },
+    {
+      title: "B.Tech, Computer Engineering",
+      organization: "Vishwakarma Institute of Information Technology",
+      startDate: "Aug 2013",
+      endDate: "May 2017",
+      description: ["Graduated with distinction, focusing on computer engineering and network security."],
+      skills: ["Computer Engineering", "Network Security", "Programming"],
+      side: "left",
+      type: "education",
+      location: "Pune, Maharashtra, India"
+    },
+  ];
+
+  // Filter experiences based on active filters
+  const filteredExperiences = experiences.filter(exp =>
+    activeFilters.length === 0 || activeFilters.includes(exp.type)
+  );
+
   return (
     <section id="experience" className="py-20 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center">Professional Journey</h2>
+        <h2 className="text-3xl font-bold text-center mb-8">Professional Journey</h2>
         <div className="w-20 h-1 bg-blue-500 mx-auto mb-8"></div>
         <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-          A decade of diverse experiences spanning product management, entrepreneurship, and continuous learning
+          A timeline of diverse experiences spanning product management, entrepreneurship, and continuous learning.
         </p>
-        
-        <div className="relative max-w-6xl mx-auto">
-          <div className="h-[600px] overflow-y-auto" onScroll={handleTimelineScroll}>
-            <div className="relative min-h-[1500px]">
-              {/* Center timeline */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-              
-              {/* Year markers */}
-              {years.map((year, index) => (
-                <div 
-                  key={year}
-                  className="absolute left-1/2 transform -translate-x-1/2" 
-                  style={{ top: `${(index / (years.length - 1)) * 100}%` }}
-                >
-                  <TimelineYear year={year} isActive={visibleYears.includes(year)} />
-                </div>
-              ))}
-              
-              {/* Experience tiles */}
-              {experiences.map((exp, index) => {
-                const position = calculatePosition(exp.startDate, exp.endDate, timelineStart, timelineEnd);
-                const typeColor = getTypeColor(exp.type);
-                const typeIcon = getTypeIcon(exp.type);
+
+        {/* Filter buttons */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {['work', 'education', 'internship', 'fellowship', 'entrepreneurial'].map(type => (
+            <Button
+              key={type}
+              variant={activeFilters.includes(type) ? "default" : "ghost"}
+              size="sm"
+              onClick={() => {
+                setActiveFilters(prev =>
+                  prev.includes(type)
+                    ? prev.filter(t => t !== type)
+                    : [...prev, type]
+                );
+              }}
+              className="flex items-center gap-1.5"
+            >
+              {getTypeIcon(type)}
+              <span className="capitalize">{type}</span>
+            </Button>
+          ))}
+          {activeFilters.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveFilters([])}
+            >
+              Clear Filters
+            </Button>
+          )}
+        </div>
+
+        {/* Timeline */}
+        <div className="relative max-w-7xl mx-auto">
+          {/* Center Line */}
+          <div className="absolute left-1/2 h-full w-px bg-gray-200 transform -translate-x-1/2" />
+
+          {/* Years and Experiences */}
+          <div className="relative">
+            {years.map(year => (
+              <div key={year} className="mb-8">
+                <TimelineYear year={year} />
                 
-                return (
-                  <HoverCard key={`${exp.organization}-${index}`} openDelay={100} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <div 
-                        className={`absolute ${exp.side === 'left' ? 'right-1/2 mr-6' : 'left-1/2 ml-6'} 
-                          p-0.5 cursor-pointer transform hover:scale-[1.03] transition-all duration-300
-                          animate-fade-in`}
-                        style={{ 
-                          top: exp.verticalOffset 
-                            ? `calc(${position.top} + ${exp.verticalOffset}px)` 
-                            : position.top,
-                          height: position.height,
-                          minHeight: exp.type === 'education' ? '200px' : '50px',
-                          maxWidth: '45%',
-                          zIndex: experiences.length - index,
-                        }}
+                {/* Experiences for this year */}
+                <div className="relative">
+                  {filteredExperiences
+                    .filter(exp => {
+                      const startYear = parseInt(exp.startDate.split(' ')[1] || exp.startDate);
+                      const endYear = exp.endDate === 'Present' 
+                        ? new Date().getFullYear() 
+                        : parseInt(exp.endDate.split(' ')[1] || exp.endDate);
+                      return startYear === year || endYear === year;
+                    })
+                    .map((exp, index) => (
+                      <div
+                        key={`${exp.organization}-${index}`}
+                        className={cn(
+                          'absolute w-[45%] mb-8',
+                          exp.side === 'left' ? 'left-0 pr-8' : 'right-0 pl-8'
+                        )}
                       >
-                        <div className={`w-full h-full rounded-lg ${typeColor} p-4 shadow-sm border backdrop-blur-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md group`}>
-                          <div className="flex items-center gap-1.5 text-xs font-semibold opacity-80">
-                            {typeIcon}
-                            <span>{exp.type.charAt(0).toUpperCase() + exp.type.slice(1)}</span>
-                          </div>
-                          <div className="mt-2">
-                            <h3 className="font-semibold text-sm md:text-base">{exp.title}</h3>
-                            <p className="text-xs opacity-90 mt-1">{exp.organization}</p>
-                            <p className="text-xs opacity-75 mt-1">
-                              {exp.startDate} — {exp.endDate}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </HoverCardTrigger>
-                    <HoverCardContent
-                      side={exp.side === 'left' ? 'left' : 'right'}
-                      className="w-80 p-0 border shadow-lg"
-                      sideOffset={5}
-                    >
-                      <div className={`p-4 rounded-t-md ${typeColor} border-b`}>
-                        <div className="flex items-center gap-1.5 text-xs font-semibold mb-1">
-                          {typeIcon}
-                          <span>{exp.type.charAt(0).toUpperCase() + exp.type.slice(1)}</span>
-                        </div>
-                        <h3 className="font-bold">{exp.title}</h3>
-                        <p className="text-sm">{exp.organization}</p>
-                        <p className="text-xs mt-1 opacity-80">
-                          {exp.startDate} — {exp.endDate}
-                        </p>
-                      </div>
-                      
-                      <div className="p-4 bg-white rounded-b-md">
-                        <ScrollArea className="max-h-48">
-                          <p className="text-sm mb-3">{exp.description}</p>
-                          
-                          {exp.skills && exp.skills.length > 0 && (
-                            <>
-                              <Separator className="my-3" />
-                              <div className="flex flex-wrap gap-2">
-                                {exp.skills.map((skill, i) => (
-                                  <div key={i} className="text-xs px-2 py-1 bg-gray-100 rounded-full">
-                                    {skill}
-                                  </div>
-                                ))}
+                        <HoverCard>
+                          <HoverCardTrigger>
+                            <div
+                              className={cn(
+                                'p-4 rounded-lg shadow-lg transition-all duration-300 cursor-pointer text-white',
+                                getTypeColor(exp.type)
+                              )}
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                {getTypeIcon(exp.type)}
+                                <span className="text-sm font-medium capitalize">{exp.type}</span>
                               </div>
-                            </>
-                          )}
+                              <h3 className="font-bold text-lg">{exp.title}</h3>
+                              <p className="text-sm opacity-90">{exp.organization}</p>
+                              <p className="text-xs mt-1">
+                                {exp.startDate} — {exp.endDate}
+                              </p>
+                            </div>
+                          </HoverCardTrigger>
                           
-                          {exp.metrics && (
-                            <>
-                              <Separator className="my-3" />
-                              <div className="flex gap-3">
-                                {exp.metrics.map((metric, i) => (
-                                  <div key={i} className="flex items-center gap-1 bg-gray-50 rounded-md px-2 py-1">
-                                    {metric.icon}
-                                    <div>
-                                      <div className="font-bold text-xs">{metric.value}</div>
-                                      <div className="text-[10px] text-gray-500">{metric.label}</div>
+                          <HoverCardContent
+                            side={exp.side === 'left' ? 'right' : 'left'}
+                            className="w-80 p-0"
+                          >
+                            <ScrollArea className="h-[300px]">
+                              <div className={cn(
+                                'p-4 text-white',
+                                getTypeColor(exp.type)
+                              )}>
+                                <h4 className="font-bold text-lg">{exp.title}</h4>
+                                <p className="text-sm">{exp.organization}</p>
+                                <p className="text-xs mt-1">
+                                  {exp.startDate} — {exp.endDate}
+                                </p>
+                              </div>
+                              
+                              <div className="p-4">
+                                <div className="space-y-2">
+                                  {exp.description.map((desc, i) => (
+                                    <p key={i} className="text-sm flex items-start gap-2">
+                                      <ChevronRight className="h-4 w-4 mt-1 flex-shrink-0" />
+                                      {desc}
+                                    </p>
+                                  ))}
+                                </div>
+                                
+                                {exp.skills && (
+                                  <div className="mt-4">
+                                    <h5 className="text-sm font-semibold mb-2">Skills & Tools</h5>
+                                    <div className="flex flex-wrap gap-2">
+                                      {exp.skills.map((skill, i) => (
+                                        <span
+                                          key={i}
+                                          className="text-xs px-2 py-1 bg-gray-100 rounded-full"
+                                        >
+                                          {skill}
+                                        </span>
+                                      ))}
                                     </div>
                                   </div>
-                                ))}
+                                )}
+                                
+                                {exp.metrics && (
+                                  <div className="mt-4 flex gap-4">
+                                    {exp.metrics.map((metric, i) => (
+                                      <div
+                                        key={i}
+                                        className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded"
+                                      >
+                                        {metric.icon}
+                                        <div>
+                                          <div className="font-bold text-sm">{metric.value}</div>
+                                          <div className="text-xs text-gray-500">{metric.label}</div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                            </>
-                          )}
-                        </ScrollArea>
+                            </ScrollArea>
+                          </HoverCardContent>
+                        </HoverCard>
                       </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                );
-              })}
-            </div>
-          </div>
-          
-          {/* Legend */}
-          <div className="flex flex-wrap justify-center gap-4 mt-8">
-            {[
-              { type: 'work', label: 'Full-time Work' },
-              { type: 'education', label: 'Education' },
-              { type: 'internship', label: 'Internship' },
-              { type: 'fellowship', label: 'Fellowship' },
-              { type: 'entrepreneurial', label: 'Entrepreneurial' }
-            ].map((item) => (
-              <div key={item.type} className="flex items-center gap-1.5">
-                <div className={`h-3 w-3 rounded ${getTypeColor(item.type).split(' ')[0]}`}></div>
-                <span className="text-xs text-gray-700">{item.label}</span>
+                    ))}
+                </div>
               </div>
             ))}
           </div>
-          
-          {/* Mobile Instructions */}
-          <div className="mt-4 text-center text-xs text-gray-500 md:hidden">
-            Scroll the timeline to explore my journey
-          </div>
-          
-          {/* Desktop Instructions */}
-          <div className="mt-4 text-center text-xs text-gray-500 hidden md:block">
-            Hover over items to see detailed information
-          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-12" role="list" aria-label="Experience types"> {/* Increased mt */}
+          {[
+            { type: 'work', label: 'Work' }, // Shortened labels
+            { type: 'education', label: 'Education' },
+            { type: 'internship', label: 'Internship' },
+            { type: 'fellowship', label: 'Fellowship' },
+            { type: 'entrepreneurial', label: 'Entrepreneurial' }
+          ].map((item) => (
+            <div key={item.type} className="flex items-center gap-1.5" role="listitem">
+              <div
+                className={`h-3 w-3 rounded-sm ${getTypeColor(item.type).split(' ')[0]}`} // Changed to square
+                aria-hidden="true"
+              ></div>
+              <span className="text-xs text-gray-700 font-medium">{item.label}</span> {/* Added font-medium */}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 text-center text-xs text-gray-500">
+          Hover over items for details. Filters apply to the timeline.
         </div>
 
         {/* Articles Section */}
-        <div className="mt-16 max-w-3xl mx-auto">
+        <div className="mt-20 max-w-3xl mx-auto"> {/* Increased mt */}
           <h3 className="text-2xl font-bold mb-6 text-center">Recent Articles</h3>
-          
+
           <div className="grid gap-6">
             {articles.map((article, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-300">
-                <h4 className="text-lg font-semibold mb-2">{article.title}</h4>
+              <article key={index} className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-300">
+                <h4 className="text-lg font-semibold mb-2 text-gray-800">{article.title}</h4> {/* Darker text */}
                 <p className="text-sm text-gray-500 mb-3">Published: {article.date}</p>
                 <p className="text-sm text-gray-700 mb-4">{article.summary}</p>
-                <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
-                  <a href={article.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center">
+                <Button asChild variant="link" size="sm" className="text-blue-600 hover:text-blue-700 p-0 h-auto"> {/* Changed to link variant */}
+                  <a
+                    href={article.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center" // Removed justify-center for left alignment
+                    aria-label={`Read ${article.title} on LinkedIn`}
+                  >
                     Read on LinkedIn
-                    <ExternalLink className="ml-2 h-4 w-4" />
+                    <ExternalLink className="ml-1.5 h-4 w-4" aria-hidden="true" /> {/* Adjusted margin */}
                   </a>
                 </Button>
-              </div>
+              </article>
             ))}
           </div>
         </div>
