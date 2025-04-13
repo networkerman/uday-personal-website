@@ -16,13 +16,14 @@ interface BaseExperience {
   side: 'left' | 'right';
   type: 'work' | 'education' | 'internship' | 'fellowship' | 'entrepreneurial';
   metrics?: { value: string; label: string; icon: JSX.Element }[];
+  verticalOffset?: number; // Added property to control vertical positioning
 }
 
 // Year marker for the timeline
 const TimelineYear = ({ year, isActive }: { year: number; isActive: boolean }) => (
   <div className="relative">
     <div className={`h-4 w-4 rounded-full ${isActive ? 'bg-electric-blue shadow-lg shadow-electric-blue/50' : 'bg-gray-300'} absolute left-1/2 -translate-x-1/2`}></div>
-    <div className="text-xs font-medium text-gray-500 absolute -left-10">{year}</div>
+    <div className="text-xs font-medium text-gray-500 absolute -left-6 transform -translate-x-100">{year}</div>
   </div>
 );
 
@@ -136,7 +137,8 @@ const Experience = () => {
       metrics: [
         { value: '₹45 CR', label: 'ARR', icon: <BadgeIndianRupee className="h-4 w-4" /> },
         { value: '18%', label: 'QoQ Growth', icon: <BriefcaseBusiness className="h-4 w-4" /> },
-      ]
+      ],
+      verticalOffset: -10 // Move this up to avoid overlap with Capgemini
     },
     {
       title: "Product Consultant",
@@ -175,7 +177,34 @@ const Experience = () => {
       ]
     },
     
-    // Education, Internships, Fellowships, and Entrepreneurial Ventures (right side)
+    // Internships (moved to left side as requested)
+    {
+      title: "Product Analyst Intern",
+      organization: "Navi",
+      startDate: "Oct 2020",
+      endDate: "Nov 2020",
+      side: "left", // Changed to left side
+      type: "internship",
+      description: [
+        "Analyzed user behavior to optimize loan application flow",
+        "Supported product decisions with data analysis and KPI tracking"
+      ],
+      verticalOffset: -25 // Vertical offset to avoid overlap with other tiles
+    },
+    {
+      title: "Product Manager Intern",
+      organization: "Brand Bazooka Advertising Pvt. Ltd.",
+      startDate: "Jul 2020",
+      endDate: "Aug 2020",
+      side: "left", // Changed to left side
+      type: "internship",
+      description: [
+        "Developed a product strategy roadmap for LINC Pens"
+      ],
+      verticalOffset: 25 // Vertical offset to avoid overlap with other internship
+    },
+    
+    // Education, Fellowships, and Entrepreneurial Ventures (right side)
     {
       title: "GrowthX Fellow",
       organization: "GrowthX®",
@@ -189,29 +218,6 @@ const Experience = () => {
       ]
     },
     {
-      title: "Product Analyst Intern",
-      organization: "Navi",
-      startDate: "Oct 2020",
-      endDate: "Nov 2020",
-      side: "right",
-      type: "internship",
-      description: [
-        "Analyzed user behavior to optimize loan application flow",
-        "Supported product decisions with data analysis and KPI tracking"
-      ]
-    },
-    {
-      title: "Product Manager Intern",
-      organization: "Brand Bazooka Advertising Pvt. Ltd.",
-      startDate: "Jul 2020",
-      endDate: "Aug 2020",
-      side: "right",
-      type: "internship",
-      description: [
-        "Developed a product strategy roadmap for LINC Pens"
-      ]
-    },
-    {
       title: "Founder - ProductX Club",
       organization: "BITS Pilani",
       startDate: "Aug 2019",
@@ -222,7 +228,8 @@ const Experience = () => {
         "Established a thriving community for product managers and enthusiasts",
         "Curated content and hosted workshops, webinars, and networking events",
         "Managed operations, budgets, and partnerships for growth"
-      ]
+      ],
+      verticalOffset: -15 // Add vertical offset to prevent overlap with MBA
     },
     {
       title: "MBA-Tech, Finance & Marketing",
@@ -233,7 +240,8 @@ const Experience = () => {
       type: "education",
       description: [
         "Passed as Silver Medalist"
-      ]
+      ],
+      verticalOffset: 20 // Add vertical offset to prevent overlap with Founder role
     },
     {
       title: "Bachelor's in Electronics & Telecommunications Engineering",
@@ -309,40 +317,18 @@ const Experience = () => {
                     : Math.min(new Date(exp.endDate).getFullYear(), years[0])
                 );
                 
-                const top = `${(yearIndex / (years.length - 1)) * 100}%`;
+                // Apply vertical offset if specified to avoid overlaps
+                const baseTop = (yearIndex / (years.length - 1)) * 100;
+                const top = exp.verticalOffset 
+                  ? `calc(${baseTop}% + ${exp.verticalOffset}px)` 
+                  : `${baseTop}%`;
+                
                 const height = nextYearIndex <= yearIndex 
                   ? `${((nextYearIndex - yearIndex) / (years.length - 1)) * 100}%`
                   : '5%'; // Minimum height for short experiences
                 
                 const typeColor = getTypeColor(exp.type);
                 const typeIcon = getTypeIcon(exp.type);
-                
-                // Offset for items on the same side that might overlap
-                let offsetStyle = {};
-                if (index > 0) {
-                  const prevExp = experiences[index - 1];
-                  if (prevExp.side === exp.side) {
-                    // Check if there's a potential overlap based on years
-                    const prevYearStart = new Date(prevExp.startDate).getFullYear();
-                    const prevYearEnd = prevExp.endDate === 'Present' 
-                      ? new Date().getFullYear() 
-                      : new Date(prevExp.endDate).getFullYear();
-                    
-                    const currYearStart = new Date(exp.startDate).getFullYear();
-                    const currYearEnd = exp.endDate === 'Present' 
-                      ? new Date().getFullYear() 
-                      : new Date(exp.endDate).getFullYear();
-                    
-                    // If years overlap
-                    if ((currYearStart <= prevYearEnd && currYearStart >= prevYearStart) ||
-                        (currYearEnd <= prevYearEnd && currYearEnd >= prevYearStart) ||
-                        (prevYearStart <= currYearEnd && prevYearStart >= currYearStart)) {
-                      offsetStyle = exp.side === 'left' 
-                        ? { marginLeft: '-20px' } 
-                        : { marginRight: '-20px' };
-                    }
-                  }
-                }
                 
                 return (
                   <HoverCard key={`${exp.organization}-${index}`} openDelay={100} closeDelay={100}>
@@ -354,7 +340,6 @@ const Experience = () => {
                           minHeight: '80px', // Ensure minimum height for all tiles
                           maxWidth: '45%',
                           zIndex: experiences.length - index,
-                          ...offsetStyle
                         }}
                       >
                         <div className={`w-full rounded-lg ${typeColor} p-4 shadow-sm border backdrop-blur-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md group`}>
