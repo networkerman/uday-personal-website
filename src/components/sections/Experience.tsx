@@ -313,7 +313,7 @@ const Experience = () => {
                         )}
                       >
                         <HoverCard>
-                          <HoverCardTrigger>
+                          <HoverCardTrigger asChild>
                             <div
                               className={cn(
                                 'p-4 rounded-lg shadow-lg transition-all duration-300 cursor-pointer text-white',
