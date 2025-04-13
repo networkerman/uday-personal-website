@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
@@ -138,7 +137,7 @@ const Experience = () => {
         { value: '₹45 CR', label: 'ARR', icon: <BadgeIndianRupee className="h-4 w-4" /> },
         { value: '18%', label: 'QoQ Growth', icon: <BriefcaseBusiness className="h-4 w-4" /> },
       ],
-      verticalOffset: -10 // Move this up to avoid overlap with Capgemini
+      verticalOffset: -25 // Increased offset to avoid overlap with Capgemini
     },
     {
       title: "Product Consultant",
@@ -165,6 +164,20 @@ const Experience = () => {
       ]
     },
     {
+      title: "Skill Development & Transition",
+      organization: "Self-directed Learning",
+      startDate: "Jun 2016",
+      endDate: "Jun 2018",
+      side: "left",
+      type: "work",
+      description: [
+        "Enhanced product management and marketing skills through self-directed learning",
+        "Worked on personal projects and prepared for transition to product roles",
+        "Researched emerging technologies and industry trends"
+      ],
+      verticalOffset: 0
+    },
+    {
       title: "Network Engineer",
       organization: "Cisco",
       startDate: "Jan 2016",
@@ -189,7 +202,7 @@ const Experience = () => {
         "Analyzed user behavior to optimize loan application flow",
         "Supported product decisions with data analysis and KPI tracking"
       ],
-      verticalOffset: -25 // Vertical offset to avoid overlap with other tiles
+      verticalOffset: -120 // Further increased offset to ensure internships are clearly separated
     },
     {
       title: "Product Manager Intern",
@@ -201,7 +214,7 @@ const Experience = () => {
       description: [
         "Developed a product strategy roadmap for LINC Pens"
       ],
-      verticalOffset: 25 // Vertical offset to avoid overlap with other internship
+      verticalOffset: -70 // Adjusted vertical offset to properly space internships
     },
     
     // Education, Fellowships, and Entrepreneurial Ventures (right side)
@@ -220,8 +233,8 @@ const Experience = () => {
     {
       title: "Founder - ProductX Club",
       organization: "BITS Pilani",
-      startDate: "Aug 2019",
-      endDate: "Apr 2021",
+      startDate: "Jan 2019",
+      endDate: "Dec 2019",
       side: "right",
       type: "entrepreneurial",
       description: [
@@ -229,19 +242,19 @@ const Experience = () => {
         "Curated content and hosted workshops, webinars, and networking events",
         "Managed operations, budgets, and partnerships for growth"
       ],
-      verticalOffset: -15 // Add vertical offset to prevent overlap with MBA
+      verticalOffset: -110 // Adjusted vertical offset for better separation
     },
     {
       title: "MBA-Tech, Finance & Marketing",
       organization: "BITS Pilani",
-      startDate: "Aug 2019",
-      endDate: "Apr 2021",
+      startDate: "Jun 2019",
+      endDate: "May 2021",
       side: "right",
       type: "education",
       description: [
         "Passed as Silver Medalist"
       ],
-      verticalOffset: 20 // Add vertical offset to prevent overlap with Founder role
+      verticalOffset: -50 // Adjusted vertical offset to move above
     },
     {
       title: "Bachelor's in Electronics & Telecommunications Engineering",
@@ -292,7 +305,7 @@ const Experience = () => {
             className="h-[600px] overflow-y-auto"
             onScroll={handleTimelineScroll}
           >
-            <div className="relative min-h-[1200px]">
+            <div className="relative min-h-[1500px]">
               {/* Center timeline */}
               <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gray-200"></div>
               
@@ -317,15 +330,37 @@ const Experience = () => {
                     : Math.min(new Date(exp.endDate).getFullYear(), years[0])
                 );
                 
-                // Apply vertical offset if specified to avoid overlaps
-                const baseTop = (yearIndex / (years.length - 1)) * 100;
-                const top = exp.verticalOffset 
-                  ? `calc(${baseTop}% + ${exp.verticalOffset}px)` 
-                  : `${baseTop}%`;
+                // Calculate start and end dates in months since timeline start
+                const startDate = new Date(exp.startDate);
+                const endDate = exp.endDate === 'Present' ? new Date() : new Date(exp.endDate);
                 
-                const height = nextYearIndex <= yearIndex 
-                  ? `${((nextYearIndex - yearIndex) / (years.length - 1)) * 100}%`
-                  : '5%'; // Minimum height for short experiences
+                // Calculate start and end positions based on exact dates (months and years)
+                const totalMonths = (timelineEnd - timelineStart) * 12;
+                const startMonths = ((startDate.getFullYear() - timelineStart) * 12) + startDate.getMonth();
+                const endMonths = exp.endDate === 'Present' 
+                  ? totalMonths 
+                  : ((endDate.getFullYear() - timelineStart) * 12) + endDate.getMonth();
+                
+                // Calculate exact percentage positions
+                const startPercent = (startMonths / totalMonths) * 100;
+                const endPercent = (endMonths / totalMonths) * 100;
+                
+                // Apply vertical offset if specified to avoid overlaps
+                const top = exp.verticalOffset 
+                  ? `calc(${startPercent}% + ${exp.verticalOffset}px)` 
+                  : `${startPercent}%`;
+                
+                // Calculate height as the percentage difference between end and start
+                // This creates a Google Calendar-like accurate representation of time spans
+                const durationPercent = endPercent - startPercent;
+                const height = `${Math.max(durationPercent, 3)}%`;
+                
+                // Adjust minimum height based on experience type for visibility
+                let minHeight = '50px';
+                if (exp.title.includes('Bachelor')) {
+                    // Bachelor's degree spans 4 years, should be much taller
+                    minHeight = '200px';
+                }
                 
                 const typeColor = getTypeColor(exp.type);
                 const typeIcon = getTypeIcon(exp.type);
@@ -337,7 +372,8 @@ const Experience = () => {
                         className={`absolute ${exp.side === 'left' ? 'right-1/2 mr-6' : 'left-1/2 ml-6'} p-0.5 cursor-pointer transform hover:scale-[1.03] transition-transform duration-300`}
                         style={{ 
                           top,
-                          minHeight: '80px', // Ensure minimum height for all tiles
+                          height: height, // Directly set height based on duration percentage
+                          minHeight: minHeight, // Minimum height for visibility
                           maxWidth: '45%',
                           zIndex: experiences.length - index,
                         }}
