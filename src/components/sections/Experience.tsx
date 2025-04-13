@@ -29,17 +29,22 @@ const TimelineYear = ({ year, isActive }: { year: number; isActive: boolean }) =
 
 // Calculate position based on date range and timeline span
 const calculatePosition = (startDate: string, endDate: string, timelineStart: number, timelineEnd: number) => {
-  const start = new Date(startDate).getFullYear() + (new Date(startDate).getMonth() / 12);
-  const end = endDate === 'Present' 
-    ? new Date().getFullYear() + (new Date().getMonth() / 12) 
-    : new Date(endDate).getFullYear() + (new Date(endDate).getMonth() / 12);
+  const startDateObj = new Date(startDate);
+  const endDateObj = endDate === 'Present' ? new Date() : new Date(endDate);
   
-  const timelineSpan = timelineEnd - timelineStart;
-  const startPos = ((start - timelineStart) / timelineSpan) * 100;
-  const endPos = ((end - timelineStart) / timelineSpan) * 100;
-  const height = endPos - startPos;
+  const totalMonths = (timelineEnd - timelineStart) * 12;
+  const startMonths = ((startDateObj.getFullYear() - timelineStart) * 12) + startDateObj.getMonth();
+  const endMonths = ((endDateObj.getFullYear() - timelineStart) * 12) + endDateObj.getMonth();
   
-  return { top: `${startPos}%`, height: `${height}%` };
+  // Reverse the position calculation to show recent items at top
+  const startPercent = 100 - ((startMonths / totalMonths) * 100);
+  const endPercent = 100 - ((endMonths / totalMonths) * 100);
+  const height = Math.abs(endPercent - startPercent);
+  
+  return { 
+    top: `${Math.min(startPercent, endPercent)}%`,
+    height: `${height}%`
+  };
 };
 
 // Get color based on experience type
@@ -87,30 +92,19 @@ const Experience = () => {
   // Year visibility state for animation
   const [visibleYears, setVisibleYears] = useState<number[]>([timelineEnd]);
   
-  // Experience data (pre-sorted with most recent first)
+  // Experience data (sorted with most recent first)
   const experiences: BaseExperience[] = [
-    // Education (Right Side)
+    // Most Recent Experiences First
     {
-      title: "Bachelor's in Electronics & Telecommunications Engineering",
-      organization: "VIIT, Pune",
-      startDate: "Aug 2013",
-      endDate: "May 2017",
-      description: "Completed with First Class Distinction, building a strong technical foundation.",
-      side: "right",
-      type: "education"
+      title: "GrowthX Fellow",
+      organization: "GrowthX®",
+      startDate: "Feb 2024",
+      endDate: "Present",
+      description: "Engaged in a fellowship focused on Go-to-Market strategy and growth models with product leaders.",
+      skills: ["Go-to-Market Strategy", "Growth Hacking", "Product Management"],
+      side: "left",
+      type: "fellowship"
     },
-    {
-      title: "MBA-Tech, Finance & Marketing",
-      organization: "BITS Pilani",
-      startDate: "Jun 2019",
-      endDate: "May 2021",
-      description: "Graduated as Silver Medalist, specializing in product management and marketing strategies.",
-      side: "right",
-      type: "education",
-      verticalOffset: -50
-    },
-
-    // Professional Experiences (Left Side)
     {
       title: "Senior Product Manager",
       organization: "Netcore Cloud",
@@ -172,6 +166,16 @@ const Experience = () => {
       verticalOffset: -70
     },
     {
+      title: "MBA-Tech, Finance & Marketing",
+      organization: "BITS Pilani",
+      startDate: "Jun 2019",
+      endDate: "May 2021",
+      description: "Graduated as Silver Medalist, specializing in product management and marketing strategies.",
+      side: "right",
+      type: "education",
+      verticalOffset: -50
+    },
+    {
       title: "Founder - ProductX Club",
       organization: "BITS Pilani",
       startDate: "Aug 2019",
@@ -203,14 +207,13 @@ const Experience = () => {
       type: "internship"
     },
     {
-      title: "GrowthX Fellow",
-      organization: "GrowthX®",
-      startDate: "Feb 2024",
-      endDate: "Present",
-      description: "Engaged in a fellowship focused on Go-to-Market strategy and growth models with product leaders.",
-      skills: ["Go-to-Market Strategy", "Growth Hacking", "Product Management"],
-      side: "left",
-      type: "fellowship"
+      title: "Bachelor's in Electronics & Telecommunications Engineering",
+      organization: "VIIT, Pune",
+      startDate: "Aug 2013",
+      endDate: "May 2017",
+      description: "Completed with First Class Distinction, building a strong technical foundation.",
+      side: "right",
+      type: "education"
     }
   ];
 
