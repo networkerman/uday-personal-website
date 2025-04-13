@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BadgeIndianRupee, BriefcaseBusiness, Building, Award, GraduationCap, Briefcase, Lightbulb, Rocket } from 'lucide-react';
+import { BadgeIndianRupee, BriefcaseBusiness, Building, Award, GraduationCap, Briefcase, Lightbulb, Rocket, ExternalLink } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 // Experience type definitions
 interface BaseExperience {
@@ -21,7 +22,7 @@ interface BaseExperience {
 const TimelineYear = ({ year, isActive }: { year: number; isActive: boolean }) => (
   <div className="relative">
     <div className={`h-4 w-4 rounded-full ${isActive ? 'bg-electric-blue shadow-lg shadow-electric-blue/50' : 'bg-gray-300'} absolute left-1/2 -translate-x-1/2`}></div>
-    <div className="text-xs font-medium text-gray-500 absolute -left-7">{year}</div>
+    <div className="text-xs font-medium text-gray-500 absolute -left-10">{year}</div>
   </div>
 );
 
@@ -77,69 +78,28 @@ const getTypeIcon = (type: string) => {
 };
 
 const Experience = () => {
-  // Define the timeline span
+  // Define the timeline span (reversed to show recent at top)
   const timelineStart = 2014;
   const timelineEnd = 2024;
-  const years = Array.from({ length: timelineEnd - timelineStart + 1 }, (_, i) => timelineStart + i);
+  const years = Array.from({ length: timelineEnd - timelineStart + 1 }, (_, i) => timelineEnd - i);
   
   // Year visibility state for animation
-  const [visibleYears, setVisibleYears] = useState<number[]>([timelineStart]);
+  const [visibleYears, setVisibleYears] = useState<number[]>([timelineEnd]);
   
-  // Experience data
+  // Experience data (pre-sorted with most recent first)
   const experiences: BaseExperience[] = [
     // Work experiences (left side)
     {
-      title: "Network Engineer",
-      organization: "Cisco",
-      startDate: "Jan 2016",
-      endDate: "Jun 2016",
-      side: "left",
-      type: "work",
-      description: [
-        "Configured routers for BFSI clients using Cisco series 17XX, 18XX, 19XX, 21XX, 36XX",
-        "Implemented security protocols to meet client needs in the BFSI vertical"
-      ]
-    },
-    {
-      title: "Assistant Product Marketing Manager",
-      organization: "Ola Electric",
-      startDate: "Jun 2018",
-      endDate: "Jul 2019",
-      side: "left",
-      type: "work",
-      description: [
-        "Conducted due diligence and synergy analysis for the acquisition of Etergo, foundational to Ola S1",
-        "Collaborated with Bhavish Aggarwal on go-to-market strategy and product positioning"
-      ]
-    },
-    {
-      title: "Product Consultant",
-      organization: "Capgemini Invent (BYJU'S Client)",
-      startDate: "Jan 2021",
-      endDate: "Aug 2021",
-      side: "left",
-      type: "work",
-      description: [
-        "Partnered with BYJU'S to enhance digital learning UX and engagement",
-        "Aligned product, engineering, and business teams to improve learning outcomes and scalability"
-      ]
-    },
-    {
-      title: "Product Manager",
+      title: "Senior Growth Product Manager",
       organization: "Netcore Cloud",
-      startDate: "Aug 2021",
-      endDate: "Mar 2023",
+      startDate: "May 2024",
+      endDate: "Present",
       side: "left",
       type: "work",
       description: [
-        "Built a scalable Journey Automation Platform integrating WhatsApp, Viber, RCS, and Zalo",
-        "Led WhatsApp integration into the Campaign Module for targeted communication",
-        "Delivered interactive features like CTA URLs, rich media, and carousels",
-        "Collaborated to launch deflector APIs and attribution dashboards"
-      ],
-      metrics: [
-        { value: '₹45 CR', label: 'ARR', icon: <BadgeIndianRupee className="h-4 w-4" /> },
-        { value: '18%', label: 'QoQ Growth', icon: <BriefcaseBusiness className="h-4 w-4" /> },
+        "Driving Netcore's 10X growth through Product-Led Growth strategies",
+        "Building scalable growth engines and aligning teams to a user-driven vision",
+        "Focusing on activation, adoption, and monetization levers"
       ]
     },
     {
@@ -161,40 +121,94 @@ const Experience = () => {
       ]
     },
     {
-      title: "Senior Growth Product Manager",
+      title: "Product Manager",
       organization: "Netcore Cloud",
-      startDate: "May 2024",
-      endDate: "Present",
+      startDate: "Aug 2021",
+      endDate: "Mar 2023",
       side: "left",
       type: "work",
       description: [
-        "Driving Netcore's 10X growth through Product-Led Growth strategies",
-        "Building scalable growth engines and aligning teams to a user-driven vision",
-        "Focusing on activation, adoption, and monetization levers"
+        "Built a scalable Journey Automation Platform integrating WhatsApp, Viber, RCS, and Zalo",
+        "Led WhatsApp integration into the Campaign Module for targeted communication",
+        "Delivered interactive features like CTA URLs, rich media, and carousels",
+        "Collaborated to launch deflector APIs and attribution dashboards"
+      ],
+      metrics: [
+        { value: '₹45 CR', label: 'ARR', icon: <BadgeIndianRupee className="h-4 w-4" /> },
+        { value: '18%', label: 'QoQ Growth', icon: <BriefcaseBusiness className="h-4 w-4" /> },
+      ]
+    },
+    {
+      title: "Product Consultant",
+      organization: "Capgemini Invent (BYJU'S Client)",
+      startDate: "Jan 2021",
+      endDate: "Aug 2021",
+      side: "left",
+      type: "work",
+      description: [
+        "Partnered with BYJU'S to enhance digital learning UX and engagement",
+        "Aligned product, engineering, and business teams to improve learning outcomes and scalability"
+      ]
+    },
+    {
+      title: "Assistant Product Marketing Manager",
+      organization: "Ola Electric",
+      startDate: "Jun 2018",
+      endDate: "Jul 2019",
+      side: "left",
+      type: "work",
+      description: [
+        "Conducted due diligence and synergy analysis for the acquisition of Etergo, foundational to Ola S1",
+        "Collaborated with Bhavish Aggarwal on go-to-market strategy and product positioning"
+      ]
+    },
+    {
+      title: "Network Engineer",
+      organization: "Cisco",
+      startDate: "Jan 2016",
+      endDate: "Jun 2016",
+      side: "left",
+      type: "work",
+      description: [
+        "Configured routers for BFSI clients using Cisco series 17XX, 18XX, 19XX, 21XX, 36XX",
+        "Implemented security protocols to meet client needs in the BFSI vertical"
       ]
     },
     
     // Education, Internships, Fellowships, and Entrepreneurial Ventures (right side)
     {
-      title: "Bachelor's in Electronics & Telecommunications Engineering",
-      organization: "VIIT Pune",
-      startDate: "Aug 2014",
-      endDate: "May 2018",
+      title: "GrowthX Fellow",
+      organization: "GrowthX®",
+      startDate: "Feb 2024",
+      endDate: "Present",
       side: "right",
-      type: "education",
+      type: "fellowship",
       description: [
-        "Passed First Class with Distinction"
+        "Mastered Go-to-Market strategy, growth models, and PLG thinking",
+        "Collaborated with product leaders to enhance experimentation skills"
       ]
     },
     {
-      title: "MBA-Tech, Finance & Marketing",
-      organization: "BITS Pilani",
-      startDate: "Aug 2019",
-      endDate: "Apr 2021",
+      title: "Product Analyst Intern",
+      organization: "Navi",
+      startDate: "Oct 2020",
+      endDate: "Nov 2020",
       side: "right",
-      type: "education",
+      type: "internship",
       description: [
-        "Passed as Silver Medalist"
+        "Analyzed user behavior to optimize loan application flow",
+        "Supported product decisions with data analysis and KPI tracking"
+      ]
+    },
+    {
+      title: "Product Manager Intern",
+      organization: "Brand Bazooka Advertising Pvt. Ltd.",
+      startDate: "Jul 2020",
+      endDate: "Aug 2020",
+      side: "right",
+      type: "internship",
+      description: [
+        "Developed a product strategy roadmap for LINC Pens"
       ]
     },
     {
@@ -211,38 +225,25 @@ const Experience = () => {
       ]
     },
     {
-      title: "Product Manager Intern",
-      organization: "Brand Bazooka Advertising Pvt. Ltd.",
-      startDate: "Jul 2020",
-      endDate: "Aug 2020",
+      title: "MBA-Tech, Finance & Marketing",
+      organization: "BITS Pilani",
+      startDate: "Aug 2019",
+      endDate: "Apr 2021",
       side: "right",
-      type: "internship",
+      type: "education",
       description: [
-        "Developed a product strategy roadmap for LINC Pens"
+        "Passed as Silver Medalist"
       ]
     },
     {
-      title: "Product Analyst Intern",
-      organization: "Navi",
-      startDate: "Oct 2020",
-      endDate: "Nov 2020",
+      title: "Bachelor's in Electronics & Telecommunications Engineering",
+      organization: "VIIT Pune",
+      startDate: "Aug 2014",
+      endDate: "May 2018",
       side: "right",
-      type: "internship",
+      type: "education",
       description: [
-        "Analyzed user behavior to optimize loan application flow",
-        "Supported product decisions with data analysis and KPI tracking"
-      ]
-    },
-    {
-      title: "GrowthX Fellow",
-      organization: "GrowthX®",
-      startDate: "Feb 2024",
-      endDate: "Present",
-      side: "right",
-      type: "fellowship",
-      description: [
-        "Mastered Go-to-Market strategy, growth models, and PLG thinking",
-        "Collaborated with product leaders to enhance experimentation skills"
+        "Passed First Class with Distinction"
       ]
     }
   ];
@@ -258,6 +259,16 @@ const Experience = () => {
     const visibleCount = Math.max(1, Math.floor(scrollRatio * years.length) + 1);
     setVisibleYears(years.slice(0, visibleCount));
   };
+
+  // Published articles
+  const articles = [
+    {
+      title: "The End of Truecaller? How India's New Telecom Rules Might Erase It",
+      date: "October 2023",
+      summary: "A deep dive into how India's telecom regulations could impact apps like Truecaller.",
+      link: "https://www.linkedin.com/pulse/end-truecaller-indias-new-telecom-rules-might-erase-das-chowdhury-5ei4f/"
+    }
+  ];
   
   return (
     <section id="experience" className="py-20 bg-gradient-to-b from-white to-gray-50">
@@ -290,12 +301,18 @@ const Experience = () => {
               
               {/* Experience tiles */}
               {experiences.map((exp, index) => {
-                const { top, height } = calculatePosition(
-                  exp.startDate, 
-                  exp.endDate, 
-                  timelineStart, 
-                  timelineEnd
+                // Reverse the calculation for timeline position since years are now in reverse
+                const yearIndex = years.indexOf(new Date(exp.startDate).getFullYear());
+                const nextYearIndex = years.indexOf(
+                  exp.endDate === 'Present' 
+                    ? years[0] 
+                    : Math.min(new Date(exp.endDate).getFullYear(), years[0])
                 );
+                
+                const top = `${(yearIndex / (years.length - 1)) * 100}%`;
+                const height = nextYearIndex <= yearIndex 
+                  ? `${((nextYearIndex - yearIndex) / (years.length - 1)) * 100}%`
+                  : '5%'; // Minimum height for short experiences
                 
                 const typeColor = getTypeColor(exp.type);
                 const typeIcon = getTypeIcon(exp.type);
@@ -305,50 +322,52 @@ const Experience = () => {
                 if (index > 0) {
                   const prevExp = experiences[index - 1];
                   if (prevExp.side === exp.side) {
-                    const prevPos = calculatePosition(
-                      prevExp.startDate, 
-                      prevExp.endDate, 
-                      timelineStart, 
-                      timelineEnd
-                    );
+                    // Check if there's a potential overlap based on years
+                    const prevYearStart = new Date(prevExp.startDate).getFullYear();
+                    const prevYearEnd = prevExp.endDate === 'Present' 
+                      ? new Date().getFullYear() 
+                      : new Date(prevExp.endDate).getFullYear();
                     
-                    // Check if there's an overlap
-                    const prevBottom = parseFloat(prevPos.top) + parseFloat(prevPos.height);
-                    const currentTop = parseFloat(top);
+                    const currYearStart = new Date(exp.startDate).getFullYear();
+                    const currYearEnd = exp.endDate === 'Present' 
+                      ? new Date().getFullYear() 
+                      : new Date(exp.endDate).getFullYear();
                     
-                    if (currentTop < prevBottom) {
+                    // If years overlap
+                    if ((currYearStart <= prevYearEnd && currYearStart >= prevYearStart) ||
+                        (currYearEnd <= prevYearEnd && currYearEnd >= prevYearStart) ||
+                        (prevYearStart <= currYearEnd && prevYearStart >= currYearStart)) {
                       offsetStyle = exp.side === 'left' 
-                        ? { marginLeft: '-10px' } 
-                        : { marginRight: '-10px' };
+                        ? { marginLeft: '-20px' } 
+                        : { marginRight: '-20px' };
                     }
                   }
                 }
                 
                 return (
-                  <HoverCard key={`${exp.organization}-${index}`} openDelay={0} closeDelay={100}>
+                  <HoverCard key={`${exp.organization}-${index}`} openDelay={100} closeDelay={100}>
                     <HoverCardTrigger asChild>
                       <div 
                         className={`absolute ${exp.side === 'left' ? 'right-1/2 mr-6' : 'left-1/2 ml-6'} p-0.5 cursor-pointer transform hover:scale-[1.03] transition-transform duration-300`}
                         style={{ 
-                          top, 
-                          height,
+                          top,
+                          minHeight: '80px', // Ensure minimum height for all tiles
                           maxWidth: '45%',
-                          minHeight: '60px',
                           zIndex: experiences.length - index,
                           ...offsetStyle
                         }}
                       >
-                        <div className={`h-full w-full rounded-lg ${typeColor} p-3 shadow-sm border backdrop-blur-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md group overflow-hidden`}>
+                        <div className={`w-full rounded-lg ${typeColor} p-4 shadow-sm border backdrop-blur-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md group`}>
                           <div className="flex items-center gap-1.5 text-xs font-semibold opacity-80">
                             {typeIcon}
                             <span>{exp.type.charAt(0).toUpperCase() + exp.type.slice(1)}</span>
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-sm md:text-base line-clamp-2 group-hover:line-clamp-none transition-all duration-300">{exp.title}</h3>
-                            <p className="text-xs opacity-90">{exp.organization}</p>
-                          </div>
-                          <div className="text-xs opacity-75 mt-auto pt-1">
-                            {exp.startDate} — {exp.endDate}
+                          <div className="mt-2">
+                            <h3 className="font-semibold text-sm md:text-base">{exp.title}</h3>
+                            <p className="text-xs opacity-90 mt-1">{exp.organization}</p>
+                            <p className="text-xs opacity-75 mt-1">
+                              {exp.startDate} — {exp.endDate}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -430,6 +449,27 @@ const Experience = () => {
           {/* Desktop Instructions */}
           <div className="mt-4 text-center text-xs text-gray-500 hidden md:block">
             Hover over items to see detailed information
+          </div>
+        </div>
+
+        {/* Articles Section */}
+        <div className="mt-16 max-w-3xl mx-auto">
+          <h3 className="text-2xl font-bold mb-6 text-center">Recent Articles</h3>
+          
+          <div className="grid gap-6">
+            {articles.map((article, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-300">
+                <h4 className="text-lg font-semibold mb-2">{article.title}</h4>
+                <p className="text-sm text-gray-500 mb-3">Published: {article.date}</p>
+                <p className="text-sm text-gray-700 mb-4">{article.summary}</p>
+                <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
+                  <a href={article.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center">
+                    Read on LinkedIn
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
