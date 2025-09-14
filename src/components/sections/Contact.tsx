@@ -57,8 +57,8 @@ const Contact = () => {
     {
       icon: <Linkedin className="h-5 w-5 text-accent" />,
       label: 'LinkedIn',
-      value: 'linkedin.com/in/udayan-das-chowdhury8329',
-      link: 'https://www.linkedin.com/in/udayan-das-chowdhury8329/'
+      value: 'linkedin.com/in/udayan-PM',
+      link: 'https://www.linkedin.com/in/udayan-PM/'
     },
     {
       icon: <MapPin className="h-5 w-5 text-accent" />,

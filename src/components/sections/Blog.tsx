@@ -28,7 +28,7 @@ const Blog = () => {
               
               <Button asChild variant="outline" className="mt-6">
                 <a 
-                  href="https://www.linkedin.com/in/udayan-das-chowdhury8329/" 
+                  href="https://www.linkedin.com/in/udayan-PM/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >

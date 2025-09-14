@@ -42,7 +42,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a 
-                  href="https://www.linkedin.com/in/udayan-das-chowdhury8329/" 
+                  href="https://www.linkedin.com/in/udayan-PM/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center text-sm text-gray-300 hover:text-electric-blue transition-colors"
