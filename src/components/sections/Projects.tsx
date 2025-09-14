@@ -69,15 +69,20 @@ const Projects = () => {
   ];
   
   return (
-    <section id="projects" className="py-20 bg-slate-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center">Projects</h2>
-        <div className="w-20 h-1 bg-electric-blue mx-auto mb-12"></div>
+    <section id="projects" className="py-20 bg-bg relative">
+      {/* Cosmic Orange gradient background */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10"
+           style={{
+             background: 'linear-gradient(45deg, rgba(255,140,0,0.02) 0%, rgba(255,140,0,0.06) 50%, rgba(255,140,0,0.02) 100%)'
+           }} />
+      <div className="container mx-auto px-4 relative z-10">
+        <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center text-text">Projects</h2>
+        <div className="w-20 h-1 bg-accent mx-auto mb-12"></div>
         
         {/* Loom Video Section */}
         <div className="max-w-4xl mx-auto mb-12">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold mb-4 text-center">Project Demo</h3>
+          <div className="bg-gradient-to-br from-surface to-accent/5 rounded-lg shadow-lg border border-accent/20 p-6">
+            <h3 className="text-xl font-semibold mb-4 text-center text-text">Project Demo</h3>
             
             {/* Loom Video Embed */}
             <div className="relative mb-6">
@@ -96,7 +101,7 @@ const Projects = () => {
             
             {/* Watch on Loom Link */}
             <div className="text-center">
-              <Button asChild variant="outline" className="text-electric-blue hover:text-electric-blue-dark hover:bg-electric-blue/10">
+              <Button asChild variant="outline" className="text-accent hover:text-accent/80 hover:bg-accent/10">
                 <a
                   href="https://www.loom.com/share/dad8f57b4c6a490d838c390356b8574e"
                   target="_blank"
@@ -112,9 +117,9 @@ const Projects = () => {
             </div>
             
             {/* Project Impact Summary */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">Project Impact</h4>
-              <p className="text-gray-700">
+            <div className="mt-6 p-4 bg-gradient-to-r from-accent/5 to-accent/10 rounded-lg border border-accent/10">
+              <h4 className="text-lg font-semibold mb-2 text-text">Project Impact</h4>
+              <p className="text-subt">
                 This project demonstrates innovative solutions that drive significant business value through strategic product development and user-centered design. The implementation showcases measurable improvements in key performance indicators and user experience metrics.
               </p>
             </div>
@@ -124,34 +129,34 @@ const Projects = () => {
         {/* Featured Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8" ref={projectsRef}>
           {projects.map((project) => (
-            <Card key={project.id} className="hover-scale overflow-hidden border border-gray-200 hover:border-electric-blue transition-all">
+            <Card key={project.id} className="hover-scale overflow-hidden border border-accent/20 hover:border-accent transition-all bg-gradient-to-br from-surface to-accent/5 hover:shadow-lg hover:shadow-accent/10">
               <div 
                 className="h-48 bg-cover bg-center" 
                 style={{ backgroundImage: `url(${project.image})` }}
               />
               <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-                <CardDescription>{project.tagline}</CardDescription>
+                <CardTitle className="text-text">{project.title}</CardTitle>
+                <CardDescription className="text-subt">{project.tagline}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-bold text-electric-blue mb-1">The Problem</h4>
-                    <p className="text-gray-700">{project.problem}</p>
+                    <h4 className="text-sm font-bold text-accent mb-1">The Problem</h4>
+                    <p className="text-subt">{project.problem}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-electric-blue mb-1">What I Built</h4>
-                    <p className="text-gray-700">{project.solution}</p>
+                    <h4 className="text-sm font-bold text-accent mb-1">What I Built</h4>
+                    <p className="text-subt">{project.solution}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-electric-blue mb-1">Business Impact</h4>
-                    <p className="text-gray-700">{project.impact}</p>
+                    <h4 className="text-sm font-bold text-accent mb-1">Business Impact</h4>
+                    <p className="text-subt">{project.impact}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-electric-blue mb-1">Tech Stack</h4>
+                    <h4 className="text-sm font-bold text-accent mb-1">Tech Stack</h4>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {project.stack.map((tech, index) => (
-                        <span key={index} className="px-2 py-1 text-xs bg-electric-blue/10 text-electric-blue-dark rounded-full">
+                        <span key={index} className="px-2 py-1 text-xs bg-accent/10 text-accent rounded-full">
                           {tech}
                         </span>
                       ))}
@@ -160,7 +165,7 @@ const Projects = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="ghost" className="text-electric-blue hover:text-electric-blue-dark hover:bg-electric-blue/10">
+                <Button variant="ghost" className="text-accent hover:text-accent/80 hover:bg-accent/10">
                   Read Full Case Study <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </CardFooter>

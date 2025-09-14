@@ -32,7 +32,7 @@ const Navbar = () => {
   return (
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/10 backdrop-blur-lg shadow-md' : 'bg-transparent'
+        isScrolled ? 'bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-lg shadow-lg shadow-accent/10' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,13 +42,13 @@ const Navbar = () => {
           </div>
           
           {/* Desktop Navigation */}
-          <nav className="hidden md:block">
+          <nav className="hidden md:flex items-center space-x-8">
             <ul className="flex space-x-8">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-sm font-medium hover:text-electric-blue transition-colors"
+                    className="text-sm font-medium text-text hover:text-accent transition-colors"
                   >
                     {link.name}
                   </a>
@@ -77,13 +77,13 @@ const Navbar = () => {
       
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white/10 backdrop-blur-lg">
+        <div className="md:hidden bg-gradient-to-b from-accent/10 to-accent/5 backdrop-blur-lg">
           <div className="pt-2 pb-4 px-4 space-y-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="block py-2 text-base font-medium hover:text-electric-blue transition-colors"
+                className="block py-2 text-base font-medium text-text hover:text-accent transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.name}

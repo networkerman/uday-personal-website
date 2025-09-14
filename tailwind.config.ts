@@ -24,9 +24,17 @@ export default {
 				'montserrat': ['Montserrat', 'sans-serif'],
 			},
 			colors: {
+				// Theme variables for dynamic theming
+				bg: 'rgb(var(--bg) / <alpha-value>)',
+				surface: 'rgb(var(--surface) / <alpha-value>)',
+				text: 'rgb(var(--text) / <alpha-value>)',
+				subt: 'rgb(var(--subt) / <alpha-value>)',
+				accent: 'rgb(var(--accent) / <alpha-value>)',
+				ring: 'rgb(var(--ring) / <alpha-value>)',
+				glass: 'rgb(var(--glass) / <alpha-value>)',
+				// Existing colors
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				'electric-blue': 'hsl(var(--electric-blue))',
@@ -74,7 +82,17 @@ export default {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				xl2: '1.25rem',
+			},
+			boxShadow: {
+				soft: '0 10px 30px rgba(0,0,0,0.25)',
+			},
+			backdropBlur: {
+				xs: '2px',
+			},
+			transitionTimingFunction: {
+				smooth: 'cubic-bezier(.22,.61,.36,1)',
 			},
 			keyframes: {
 				'accordion-down': {

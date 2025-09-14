@@ -336,10 +336,15 @@ const Experience = () => {
   }, []);
 
   return (
-    <section id="experience" className="py-20 bg-gradient-to-b from-white to-slate-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center">Experience</h2>
-        <div className="w-20 h-1 bg-electric-blue mx-auto mb-6"></div>
+    <section id="experience" className="py-20 bg-bg relative">
+      {/* Cosmic Orange gradient background */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10"
+           style={{
+             background: 'linear-gradient(225deg, rgba(255,140,0,0.04) 0%, rgba(255,140,0,0.01) 50%, rgba(255,140,0,0.03) 100%)'
+           }} />
+      <div className="container mx-auto px-4 relative z-10">
+        <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center text-text">Experience</h2>
+        <div className="w-20 h-1 bg-accent mx-auto mb-6"></div>
         
         {/* Filter Controls */}
         <div className="flex flex-wrap justify-center gap-3 mb-10 max-w-2xl mx-auto">
@@ -401,8 +406,8 @@ const Experience = () => {
         {/* Skill filter UI */}
         {showSkillFilters && (
           <div className="mb-10 mt-4 max-w-3xl mx-auto">
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <h3 className="text-sm font-medium mb-3 text-gray-700">Filter by Skills</h3>
+            <div className="bg-surface/50 p-4 rounded-lg border border-surface/20">
+              <h3 className="text-sm font-medium mb-3 text-text">Filter by Skills</h3>
               <div className="flex flex-wrap gap-2">
                 {allSkills.map(skill => (
                   <Badge
@@ -434,7 +439,7 @@ const Experience = () => {
         >
           {/* Fixed Year Indicators */}
           <div className="sticky top-20 h-0 z-10 pointer-events-none">
-            <div className="absolute left-1/2 transform -translate-x-1/2 bg-white shadow-sm border border-gray-200 rounded-full px-4 py-1 text-sm font-medium text-gray-700 transition-all duration-300">
+            <div className="absolute left-1/2 transform -translate-x-1/2 bg-surface shadow-sm border border-surface/20 rounded-full px-4 py-1 text-sm font-medium text-text transition-all duration-300">
               {/* If the visible year is the current year or any item has 'Present' as end date, show 'Present (YEAR)' */}
               {visibleYear === new Date().getFullYear() ? 
                 `Present (${new Date().getFullYear()})` : visibleYear}
@@ -504,9 +509,9 @@ const Experience = () => {
                     </div>
                     
                     <h3 className="text-lg font-bold mb-1">{exp.title}</h3>
-                    <h4 className="text-md font-medium text-gray-700 mb-1">{exp.organization}</h4>
+                    <h4 className="text-md font-medium text-subt mb-1">{exp.organization}</h4>
                     
-                    <div className="flex items-center text-sm text-gray-500 mb-3">
+                    <div className="flex items-center text-sm text-subt mb-3">
                       <span>{exp.startDate} - {exp.endDate}</span>
                       {exp.location && (
                         <>
@@ -519,17 +524,17 @@ const Experience = () => {
                     {exp.metrics && (
                       <div className="flex flex-wrap gap-2 mb-3">
                         {exp.metrics.map((metric, idx) => (
-                          <div key={idx} className="flex items-center gap-1.5 bg-gray-50 rounded-full px-3 py-1 text-sm">
+                          <div key={idx} className="flex items-center gap-1.5 bg-surface/50 rounded-full px-3 py-1 text-sm">
                             {metric.icon}
                             <span className="font-medium">{metric.value}</span>
-                            <span className="text-gray-500 text-xs">{metric.label}</span>
+                            <span className="text-subt text-xs">{metric.label}</span>
                           </div>
                         ))}
                       </div>
                     )}
                     
                     {/* Show only first line of description on the main card */}
-                    <p className="text-gray-600 line-clamp-2">
+                    <p className="text-subt line-clamp-2">
                       {exp.description[0]}
                     </p>
                   </div>
@@ -539,9 +544,9 @@ const Experience = () => {
                   <ScrollArea className="h-80">
                     <div className="p-2">
                       <h3 className="text-lg font-bold mb-1">{exp.title}</h3>
-                      <h4 className="text-md font-medium text-gray-700 mb-1">{exp.organization}</h4>
+                      <h4 className="text-md font-medium text-subt mb-1">{exp.organization}</h4>
                       
-                      <div className="text-sm text-gray-500 mb-3">
+                      <div className="text-sm text-subt mb-3">
                         <div>{exp.startDate} - {exp.endDate}</div>
                         {exp.location && <div>{exp.location}</div>}
                       </div>
@@ -552,7 +557,7 @@ const Experience = () => {
                         <h5 className="text-sm font-semibold mb-2">Overview</h5>
                         <ul className="list-disc pl-4 space-y-1.5">
                           {exp.description.map((desc, idx) => (
-                            <li key={idx} className="text-gray-600 text-sm">{desc}</li>
+                            <li key={idx} className="text-subt text-sm">{desc}</li>
                           ))}
                         </ul>
                       </div>
@@ -575,11 +580,11 @@ const Experience = () => {
                           <h5 className="text-sm font-semibold mb-2">Key Metrics</h5>
                           <div className="grid grid-cols-2 gap-2">
                             {exp.metrics.map((metric, idx) => (
-                              <div key={idx} className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded">
+                              <div key={idx} className="flex items-center gap-2 bg-surface/50 px-3 py-2 rounded">
                                 {metric.icon}
                                 <div>
                                   <div className="font-bold text-sm">{metric.value}</div>
-                                  <div className="text-xs text-gray-500">{metric.label}</div>
+                                  <div className="text-xs text-subt">{metric.label}</div>
                                 </div>
                               </div>
                             ))}
@@ -603,12 +608,12 @@ const Experience = () => {
               {articles.map((article, index) => (
                 <article 
                   key={index} 
-                  className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-300"
+                  className="bg-surface p-6 rounded-xl shadow-sm border border-surface/20 hover:shadow-md transition-shadow duration-300"
                 >
-                  <h4 className="text-lg font-semibold mb-2 text-gray-800">{article.title}</h4>
-                  <p className="text-sm text-gray-500 mb-3">Published: {article.date}</p>
-                  <p className="text-sm text-gray-700 mb-4">{article.summary}</p>
-                  <Button asChild variant="link" size="sm" className="text-blue-600 hover:text-blue-700 p-0 h-auto">
+                  <h4 className="text-lg font-semibold mb-2 text-text">{article.title}</h4>
+                  <p className="text-sm text-subt mb-3">Published: {article.date}</p>
+                  <p className="text-sm text-subt mb-4">{article.summary}</p>
+                  <Button asChild variant="link" size="sm" className="text-accent hover:text-accent/80 p-0 h-auto">
                     <a
                       href={article.link}
                       target="_blank"

@@ -45,14 +45,74 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
-    /* Custom Electric Blue Theme */
-    --electric-blue: 199 100% 50%;
-    --electric-blue-light: 199 100% 70%;
-    --electric-blue-dark: 210 100% 40%;
+    /* Custom Cosmic Orange Theme */
+    --electric-blue: 25 100% 50%;      /* cosmic orange */
+    --electric-blue-light: 25 100% 70%; /* lighter cosmic orange */
+    --electric-blue-dark: 25 100% 40%;  /* darker cosmic orange */
+
+    /* Base theme tokens - Cosmic Orange Primary */
+    --bg: 255 248 240;       /* Very light cosmic orange background */
+    --surface: 255 252 248;  /* Warm white with cosmic orange tint */
+    --text: 20 15 10;        /* Warm dark brown */
+    --subt: 80 60 40;        /* Warm medium brown */
+    --accent: 255 140 0;     /* Cosmic Orange - iPhone 17 Pro */
+    --ring: 255 140 0;       /* Cosmic Orange for focus */
+    --glass: 255 248 240;    /* Cosmic orange tinted glass */
+    color-scheme: light;
   }
 
   .dark {
     /* ... keep existing code (dark mode variables) */
+  }
+
+  /* ===== Premium Dark Themes (switch these via [data-theme="<name>"]) ===== */
+
+  /* 1) cosmic-dark — deep black with cosmic orange accent */
+  [data-theme="cosmic-dark"] {
+    --bg: 5 5 8;            /* deep black */
+    --surface: 12 12 16;    /* card panels */
+    --text: 245 245 245;    /* bright white */
+    --subt: 180 180 180;    /* subtle text */
+    --accent: 255 140 0;    /* cosmic orange */
+    --ring: 255 140 0;
+    --glass: 15 15 20;
+    color-scheme: dark;
+  }
+
+  /* 2) cosmic-graphite — warm dark gray + cosmic orange */
+  [data-theme="cosmic-graphite"] {
+    --bg: 15 15 18;
+    --surface: 25 25 30;
+    --text: 240 240 240;
+    --subt: 160 160 160;
+    --accent: 255 140 0;    /* cosmic orange */
+    --ring: 255 140 0;
+    --glass: 20 20 25;
+    color-scheme: dark;
+  }
+
+  /* 3) cosmic-amoled — pure black w/ cosmic orange (for OLED pop) */
+  [data-theme="cosmic-amoled"] {
+    --bg: 0 0 0;
+    --surface: 8 8 8;
+    --text: 250 250 250;
+    --subt: 170 170 170;
+    --accent: 255 140 0;    /* cosmic orange */
+    --ring: 255 140 0;
+    --glass: 5 5 5;
+    color-scheme: dark;
+  }
+
+  /* 4) cosmic-light — light mode with cosmic orange */
+  [data-theme="cosmic-light"] {
+    --bg: 248 248 250;
+    --surface: 255 255 255;
+    --text: 20 20 20;
+    --subt: 100 100 100;
+    --accent: 255 140 0;    /* cosmic orange */
+    --ring: 255 140 0;
+    --glass: 255 255 255;
+    color-scheme: light;
   }
   
   /* Custom scrollbar */
@@ -65,12 +125,33 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--electric-blue) / 0.6);
+    background: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--electric-blue-light)));
     border-radius: 10px;
   }
   
   html {
     scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-text antialiased;
+  }
+
+  /* Focus rings with cosmic orange */
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.4);
+    border-radius: 8px;
+  }
+
+  /* Motion accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -92,13 +173,26 @@
   .glass-card {
     @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg;
   }
+
+  /* Glassmorphism utility with cosmic orange tint */
+  .glass {
+    background: linear-gradient(to bottom right,
+      rgba(255, 140, 0, 0.05),
+      rgba(255, 255, 255, 0.6),
+      rgba(255, 140, 0, 0.02));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 140, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(255, 140, 0, 0.1);
+    border-radius: 16px;
+  }
   
   .section-container {
     @apply max-w-7xl mx-auto px-4 py-16 sm:px-6 md:py-24 lg:px-8;
   }
   
   .text-gradient {
-    @apply bg-gradient-to-r from-electric-blue to-electric-blue-light bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-accent via-electric-blue-light to-electric-blue bg-clip-text text-transparent;
   }
   
   .hover-scale {
@@ -106,11 +200,11 @@
   }
   
   .btn-primary {
-    @apply px-6 py-3 bg-electric-blue/90 text-white rounded-md font-medium transition-all hover:bg-electric-blue shadow-md hover:shadow-electric-blue/30;
+    @apply px-6 py-3 bg-accent text-white rounded-md font-medium transition-all hover:bg-accent/90 shadow-md hover:shadow-accent/30;
   }
   
   .btn-outline {
-    @apply px-6 py-3 border border-electric-blue text-electric-blue rounded-md font-medium transition-all hover:bg-electric-blue/10;
+    @apply px-6 py-3 border border-accent text-accent rounded-md font-medium transition-all hover:bg-accent/10;
   }
 }
 
