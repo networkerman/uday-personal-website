@@ -1,0 +1,59 @@
+{
+  "siteUrl": "https://www.udayandaschowdhury.site",
+  "person": {
+    "name": "Udayan Das Chowdhury",
+    "jobTitle": "Senior Product Manager",
+    "worksFor": { "name": "Netcore Cloud" },
+    "sameAs": [
+      "https://www.linkedin.com/in/udayan-das-chowdhury",
+      "https://github.com/networkerman",
+      "https://twitter.com/udayan_das"
+    ]
+  },
+  "projects": [
+    {
+      "slug": "magic-cart",
+      "name": "Magic Cart - 1-Click Checkout via WhatsApp",
+      "headline": "1-Click Checkout via WhatsApp",
+      "description": "Built a seamless WhatsApp-based checkout solution that allows customers to complete purchases with minimal friction, increasing checkout conversion by 32% and reducing cart abandonment by 45%.",
+      "image": "/assets/magic-cart-cover.jpg",
+      "datePublished": "2024-01-15",
+      "dateModified": "2024-12-01",
+      "keywords": ["WhatsApp API", "E-commerce", "Checkout", "Conversion Optimization", "Product Management"],
+      "isArticle": false
+    },
+    {
+      "slug": "chatbot-platform",
+      "name": "AI-Powered Chatbot Platform",
+      "headline": "AI-powered commerce solution",
+      "description": "Developed an AI-powered chatbot platform that integrates with e-commerce systems to provide personalized shopping assistance, reducing customer support tickets by 60% and increasing sales through chat by 25%.",
+      "image": "/assets/chatbot-platform-cover.jpg",
+      "datePublished": "2024-02-20",
+      "dateModified": "2024-12-01",
+      "keywords": ["AI/ML", "Natural Language Processing", "E-commerce APIs", "React", "Product Management"],
+      "isArticle": false
+    },
+    {
+      "slug": "cart-abandonment",
+      "name": "Cart Abandonment Journey",
+      "headline": "Smart recovery system",
+      "description": "Created an intelligent multi-channel recovery system that dynamically selects the optimal channel and message to reconnect with customers, recovering 28% of abandoned carts and generating ₹2.5 CR in additional revenue.",
+      "image": "/assets/cart-abandonment-cover.jpg",
+      "datePublished": "2024-03-10",
+      "dateModified": "2024-12-01",
+      "keywords": ["Marketing Automation", "Behavioral Analytics", "WhatsApp", "Email", "Product Management"],
+      "isArticle": false
+    },
+    {
+      "slug": "cpaas-payload",
+      "name": "CPaaS Payload Personalization",
+      "headline": "Dynamic content delivery",
+      "description": "Built a system that dynamically personalizes payload content based on user behavior, preferences, and real-time context, improving engagement by 40% and increasing click-through rates by 35%.",
+      "image": "/assets/cpaas-payload-cover.jpg",
+      "datePublished": "2024-04-05",
+      "dateModified": "2024-12-01",
+      "keywords": ["Real-time Data Processing", "Machine Learning", "Template Engine", "Microservices", "Product Management"],
+      "isArticle": false
+    }
+  ]
+}
