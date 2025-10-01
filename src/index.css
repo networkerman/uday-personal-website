@@ -51,8 +51,8 @@
     --electric-blue-dark: 25 100% 40%;  /* darker cosmic orange */
     
     /* New Button Colors */
-    --button-bg: 254 241 59;           /* rgb(254,241,59) - bright yellow */
-    --button-text: 230 128 85;         /* rgb(230,128,85) - orange text */
+    --button-bg: 230 128 85;           /* rgb(230,128,85) - orange background */
+    --button-text: 254 241 59;         /* rgb(254,241,59) - golden fizz text */
 
     /* Base theme tokens - Cosmic Orange Primary */
     --bg: 255 248 240;       /* Very light cosmic orange background */
@@ -181,13 +181,13 @@
   /* Glassmorphism utility with new button colors */
   .glass {
     background: linear-gradient(to bottom right,
-      rgba(254, 241, 59, 0.1),
+      rgba(230, 128, 85, 0.1),
       rgba(255, 255, 255, 0.6),
-      rgba(254, 241, 59, 0.05));
+      rgba(230, 128, 85, 0.05));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(254, 241, 59, 0.2);
-    box-shadow: 0 8px 24px rgba(254, 241, 59, 0.15);
+    border: 1px solid rgba(230, 128, 85, 0.2);
+    box-shadow: 0 8px 24px rgba(230, 128, 85, 0.15);
     border-radius: 16px;
   }
   
