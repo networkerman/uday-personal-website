@@ -64,10 +64,10 @@ const Hero = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-button-text hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
+            <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-white hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
               <a href="#projects"><span>Explore Projects</span></a>
             </Button>
-            <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-button-text hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
+            <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-white hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
               <a href="#contact"><span>Get in Touch</span></a>
             </Button>
           </motion.div>
