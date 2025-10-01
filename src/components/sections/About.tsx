@@ -33,14 +33,16 @@ const About = () => {
           
           <div className="space-y-6 text-lg text-subt">
             <p>
-              With over 6 years of experience in scaling B2B SaaS platforms, I'm on a mission to 
-              simplify complexity through product. My expertise lies at the intersection of marketing technology, 
-              communication platforms, and customer journey optimization.
+              I am a dynamic and results-driven Product Manager with 7+ years of experience building and scaling B2B SaaS platforms across Martech and CPaaS ecosystems. Currently leading Netcore Cloud's WhatsApp Business API and omnichannel messaging stack, I have driven ARR growth from ₹1.5 CR to ₹100 CR and scaled WhatsApp-led marketing revenue from ₹24 CR to ₹75 Lakh+ MRR.
             </p>
             <p>
-              I specialize in building products that transform how businesses communicate with their customers. 
-              Through innovative CPaaS solutions, AI-driven automation, and strategic thinking, I help 
-              companies increase conversions and create meaningful customer engagement.
+              With a strong technical foundation from BITS Pilani and an MBA in Tech & Marketing, I bridge strategy and execution — from API-first architecture design and AI-driven conversational commerce to journey automation and revenue attribution dashboards. My work has powered market-leading products such as Magic Cart Checkout, Cart Abandonment Automation, and a scalable chatbot platform integrating with WhatsApp Payments, RCS, Viber, Zalo, and TikTok.
+            </p>
+            <p>
+              Before Netcore, I partnered with BYJU'S as a Product Consultant at Capgemini Invent to enhance digital learning engagement and scalability, and contributed to Ola Electric's early GTM strategy alongside its leadership team.
+            </p>
+            <p>
+              Passionate about innovating at the intersection of growth and technology, I thrive in cross-functional collaboration, data-driven decision making, and building products that deliver measurable ROI.
             </p>
           </div>
           
