@@ -52,7 +52,7 @@
     
     /* New Button Colors */
     --button-bg: 230 128 85;           /* rgb(230,128,85) - orange background */
-    --button-text: 254 241 59;         /* rgb(254,241,59) - golden fizz text */
+    --button-text: 230 128 85;         /* rgb(230,128,85) - orange text for better visibility */
 
     /* Base theme tokens - Cosmic Orange Primary */
     --bg: 255 248 240;       /* Very light cosmic orange background */
