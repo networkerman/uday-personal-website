@@ -178,16 +178,16 @@
     @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg;
   }
 
-  /* Glassmorphism utility with cosmic orange tint */
+  /* Glassmorphism utility with new button colors */
   .glass {
     background: linear-gradient(to bottom right,
-      rgba(255, 140, 0, 0.05),
+      rgba(254, 241, 59, 0.1),
       rgba(255, 255, 255, 0.6),
-      rgba(255, 140, 0, 0.02));
+      rgba(254, 241, 59, 0.05));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 140, 0, 0.1);
-    box-shadow: 0 8px 24px rgba(255, 140, 0, 0.1);
+    border: 1px solid rgba(254, 241, 59, 0.2);
+    box-shadow: 0 8px 24px rgba(254, 241, 59, 0.15);
     border-radius: 16px;
   }
   

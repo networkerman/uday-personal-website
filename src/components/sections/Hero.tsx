@@ -64,7 +64,7 @@ const Hero = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Button asChild className="glass px-5 py-3 text-sm font-medium">
+            <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-button-text hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
               <a href="#projects"><span>Explore Projects</span></a>
             </Button>
             <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-button-text hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
@@ -109,7 +109,7 @@ function Metric({ label, value }: { label: string; value: string }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.45 }}
-      className="rounded-xl2 border border-white/5 bg-surface/30 p-5"
+      className="rounded-xl2 border border-button-bg/10 bg-button-bg/5 p-5"
     >
       <div className="text-3xl font-semibold text-text">{value}</div>
       <div className="text-subt text-sm mt-1">{label}</div>

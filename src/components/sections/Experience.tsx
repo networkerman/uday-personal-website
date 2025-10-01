@@ -406,7 +406,7 @@ const Experience = () => {
         {/* Skill filter UI */}
         {showSkillFilters && (
           <div className="mb-10 mt-4 max-w-3xl mx-auto">
-            <div className="bg-surface/50 p-4 rounded-lg border border-surface/20">
+            <div className="bg-button-bg/10 p-4 rounded-lg border border-button-bg/20">
               <h3 className="text-sm font-medium mb-3 text-text">Filter by Skills</h3>
               <div className="flex flex-wrap gap-2">
                 {allSkills.map(skill => (
@@ -439,7 +439,7 @@ const Experience = () => {
         >
           {/* Fixed Year Indicators */}
           <div className="sticky top-20 h-0 z-10 pointer-events-none">
-            <div className="absolute left-1/2 transform -translate-x-1/2 bg-surface shadow-sm border border-surface/20 rounded-full px-4 py-1 text-sm font-medium text-text transition-all duration-300">
+            <div className="absolute left-1/2 transform -translate-x-1/2 bg-button-bg/10 shadow-sm border border-button-bg/20 rounded-full px-4 py-1 text-sm font-medium text-text transition-all duration-300">
               {/* If the visible year is the current year or any item has 'Present' as end date, show 'Present (YEAR)' */}
               {visibleYear === new Date().getFullYear() ? 
                 `Present (${new Date().getFullYear()})` : visibleYear}
@@ -524,7 +524,7 @@ const Experience = () => {
                     {exp.metrics && (
                       <div className="flex flex-wrap gap-2 mb-3">
                         {exp.metrics.map((metric, idx) => (
-                          <div key={idx} className="flex items-center gap-1.5 bg-surface/50 rounded-full px-3 py-1 text-sm">
+                          <div key={idx} className="flex items-center gap-1.5 bg-button-bg/10 rounded-full px-3 py-1 text-sm">
                             {metric.icon}
                             <span className="font-medium">{metric.value}</span>
                             <span className="text-subt text-xs">{metric.label}</span>
@@ -580,7 +580,7 @@ const Experience = () => {
                           <h5 className="text-sm font-semibold mb-2">Key Metrics</h5>
                           <div className="grid grid-cols-2 gap-2">
                             {exp.metrics.map((metric, idx) => (
-                              <div key={idx} className="flex items-center gap-2 bg-surface/50 px-3 py-2 rounded">
+                              <div key={idx} className="flex items-center gap-2 bg-button-bg/10 px-3 py-2 rounded">
                                 {metric.icon}
                                 <div>
                                   <div className="font-bold text-sm">{metric.value}</div>
@@ -608,7 +608,7 @@ const Experience = () => {
               {articles.map((article, index) => (
                 <article 
                   key={index} 
-                  className="bg-surface p-6 rounded-xl shadow-sm border border-surface/20 hover:shadow-md transition-shadow duration-300"
+                  className="bg-button-bg/5 p-6 rounded-xl shadow-sm border border-button-bg/20 hover:shadow-md transition-shadow duration-300"
                 >
                   <h4 className="text-lg font-semibold mb-2 text-text">{article.title}</h4>
                   <p className="text-sm text-subt mb-3">Published: {article.date}</p>
