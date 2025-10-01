@@ -94,7 +94,7 @@ const Hero = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.5 }}
         href="#about" 
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-float"
+        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-float"
       >
         <ArrowDown className="h-8 w-8 text-accent" />
       </motion.a>
