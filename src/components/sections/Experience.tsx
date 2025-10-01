@@ -362,7 +362,7 @@ const Experience = () => {
                 "cursor-pointer transition-all duration-300 py-1.5 px-3",
                 activeTypeFilters.includes(item.type) 
                   ? getTypeColor(item.type) 
-                  : "hover:border-button-bg"
+                  : "hover:border-button-bg text-black"
               )}
               onClick={() => toggleTypeFilter(item.type)}
             >
@@ -375,7 +375,7 @@ const Experience = () => {
           <Badge
             variant="outline"
             className={cn(
-              "cursor-pointer py-1.5 px-3 transition-all",
+              "cursor-pointer py-1.5 px-3 transition-all text-black",
               showSkillFilters ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-button-bg/10"
             )}
             onClick={() => setShowSkillFilters(prev => !prev)}
