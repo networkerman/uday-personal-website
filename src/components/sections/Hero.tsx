@@ -67,7 +67,7 @@ const Hero = () => {
             <Button asChild className="glass px-5 py-3 text-sm font-medium">
               <a href="#projects"><span>Explore Projects</span></a>
             </Button>
-            <Button asChild variant="outline" className="px-5 py-3 text-sm font-medium border border-accent/40 rounded-xl2 hover:bg-accent/10 transition-colors duration-200">
+            <Button asChild className="px-5 py-3 text-sm font-medium bg-button-bg text-button-text hover:bg-button-bg/90 transition-colors duration-200 rounded-xl2">
               <a href="#contact"><span>Get in Touch</span></a>
             </Button>
           </motion.div>

@@ -362,7 +362,7 @@ const Experience = () => {
                 "cursor-pointer transition-all duration-300 py-1.5 px-3",
                 activeTypeFilters.includes(item.type) 
                   ? getTypeColor(item.type) 
-                  : "hover:border-gray-400"
+                  : "hover:border-button-bg"
               )}
               onClick={() => toggleTypeFilter(item.type)}
             >
@@ -376,7 +376,7 @@ const Experience = () => {
             variant="outline"
             className={cn(
               "cursor-pointer py-1.5 px-3 transition-all",
-              showSkillFilters ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-gray-100"
+              showSkillFilters ? "bg-blue-50 hover:bg-blue-100" : "hover:bg-button-bg/10"
             )}
             onClick={() => setShowSkillFilters(prev => !prev)}
           >
@@ -389,7 +389,7 @@ const Experience = () => {
           {(activeTypeFilters.length > 0 || activeSkillFilters.length > 0) && (
             <Badge 
               variant="outline"
-              className="cursor-pointer hover:bg-gray-100 py-1.5 px-3"
+              className="cursor-pointer hover:bg-button-bg/10 py-1.5 px-3"
               onClick={() => {
                 setActiveTypeFilters([]);
                 setActiveSkillFilters([]);
@@ -417,7 +417,7 @@ const Experience = () => {
                       "cursor-pointer text-xs py-1 px-2",
                       activeSkillFilters.includes(skill) 
                         ? "bg-electric-blue hover:bg-electric-blue/90" 
-                        : "hover:bg-gray-100"
+                        : "hover:bg-button-bg/10"
                     )}
                     onClick={() => toggleSkillFilter(skill)}
                   >
@@ -447,7 +447,7 @@ const Experience = () => {
           </div>
           
           {/* Central line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-200 transform -translate-x-1/2"></div>
+          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-button-bg/30 transform -translate-x-1/2"></div>
           
           {/* Timeline items */}
           {filteredExperiences.map((exp, index) => (
@@ -492,7 +492,7 @@ const Experience = () => {
                 <HoverCardTrigger asChild>
                   <div 
                     className={cn(
-                      "relative bg-white p-5 rounded-lg shadow-sm border border-gray-100",
+                      "relative bg-white p-5 rounded-lg shadow-sm border border-button-bg/20",
                       "hover:shadow-md transition-shadow duration-300",
                       exp.side === "right" && "md:ml-10",
                       exp.side === "left" && "md:mr-10"
@@ -567,7 +567,7 @@ const Experience = () => {
                           <h5 className="text-sm font-semibold mb-2">Skills & Technologies</h5>
                           <div className="flex flex-wrap gap-1.5">
                             {exp.skills.map((skill, idx) => (
-                              <Badge key={idx} variant="secondary" className="bg-gray-100">
+                              <Badge key={idx} variant="secondary" className="bg-button-bg/20">
                                 {skill}
                               </Badge>
                             ))}

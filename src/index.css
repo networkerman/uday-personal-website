@@ -49,6 +49,10 @@
     --electric-blue: 25 100% 50%;      /* cosmic orange */
     --electric-blue-light: 25 100% 70%; /* lighter cosmic orange */
     --electric-blue-dark: 25 100% 40%;  /* darker cosmic orange */
+    
+    /* New Button Colors */
+    --button-bg: 254 241 59;           /* rgb(254,241,59) - bright yellow */
+    --button-text: 230 128 85;         /* rgb(230,128,85) - orange text */
 
     /* Base theme tokens - Cosmic Orange Primary */
     --bg: 255 248 240;       /* Very light cosmic orange background */

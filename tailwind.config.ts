@@ -32,6 +32,8 @@ export default {
 				accent: 'rgb(var(--accent) / <alpha-value>)',
 				ring: 'rgb(var(--ring) / <alpha-value>)',
 				glass: 'rgb(var(--glass) / <alpha-value>)',
+				'button-bg': 'rgb(var(--button-bg) / <alpha-value>)',
+				'button-text': 'rgb(var(--button-text) / <alpha-value>)',
 				// Existing colors
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
