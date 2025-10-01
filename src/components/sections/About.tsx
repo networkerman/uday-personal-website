@@ -54,7 +54,7 @@ const About = () => {
                   key={index} 
                   className="flex flex-col items-center p-4 rounded-lg border border-button-bg/20 bg-gradient-to-br from-button-bg/10 to-button-bg/5 hover:border-button-bg hover:shadow-lg hover:shadow-button-bg/10 transition-all hover-scale"
                 >
-                  <div className="p-3 bg-gradient-to-br from-button-bg/20 to-button-bg/10 rounded-full mb-3 text-button-text">
+                  <div className="p-3 bg-gradient-to-br from-button-bg/20 to-button-bg/10 rounded-full mb-3" style={{ color: 'rgb(230,128,85)' }}>
                     {skill.icon}
                   </div>
                   <span className="font-medium text-text">{skill.name}</span>
@@ -71,7 +71,7 @@ const About = () => {
                   key={index} 
                   className="flex flex-col items-center p-4 rounded-lg border border-button-bg/20 bg-gradient-to-br from-button-bg/10 to-button-bg/5 hover:border-button-bg hover:shadow-lg hover:shadow-button-bg/10 transition-all hover-scale"
                 >
-                  <div className="p-3 bg-gradient-to-br from-button-bg/20 to-button-bg/10 rounded-full mb-3 text-button-text">
+                  <div className="p-3 bg-gradient-to-br from-button-bg/20 to-button-bg/10 rounded-full mb-3" style={{ color: 'rgb(230,128,85)' }}>
                     {passion.icon}
                   </div>
                   <span className="font-medium text-text">{passion.name}</span>
