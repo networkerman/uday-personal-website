@@ -26,7 +26,7 @@ const Blog = () => {
                 In the meantime, connect with me on LinkedIn for updates on my latest thinking and industry insights.
               </p>
               
-              <Button asChild variant="outline" className="mt-6">
+              <Button asChild variant="outline" className="mt-6 px-5 py-3 text-sm font-medium">
                 <a 
                   href="https://www.linkedin.com/in/udayan-PM/" 
                   target="_blank" 
@@ -46,7 +46,7 @@ const Blog = () => {
           </div>
           
           <div className="mt-10 flex justify-center">
-            <Button asChild variant="ghost" className="text-accent hover:text-accent/80 hover:bg-accent/10">
+            <Button asChild variant="outline" className="px-5 py-3 text-sm font-medium">
               <a href="#contact">
                 <span className="inline-flex items-center">
                   Get in Touch <ArrowRight className="ml-2 h-4 w-4" />

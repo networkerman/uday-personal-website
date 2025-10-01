@@ -33,7 +33,7 @@ const getTypeColor = (type: string) => {
     fellowship: 'bg-orange-500 text-white',
     entrepreneurial: 'bg-purple-500 text-white'
   };
-  return colors[type] || 'bg-gray-500 text-white';
+  return colors[type] || 'bg-button-bg text-button-text';
 };
 
 // Get icon based on experience type

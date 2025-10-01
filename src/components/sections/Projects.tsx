@@ -101,7 +101,7 @@ const Projects = () => {
             
             {/* Watch on Loom Link */}
             <div className="text-center">
-              <Button asChild variant="outline" className="text-accent hover:text-accent/80 hover:bg-accent/10">
+              <Button asChild variant="outline" className="px-5 py-3 text-sm font-medium">
                 <a
                   href="https://www.loom.com/share/dad8f57b4c6a490d838c390356b8574e"
                   target="_blank"
