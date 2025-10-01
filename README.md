@@ -2,8 +2,7 @@
 
 A modern, responsive portfolio website showcasing professional experience, projects, and expertise in Product Management, Martech, and CPaaS solutions.
 
-**Live URL**: https://www.udayandaschowdhury.site  
-**Lovable Project**: https://lovable.dev/projects/8b32876c-c798-44db-bfa0-564c514bee4c
+**Live URL**: https://www.udayandaschowdhury.site
 
 ## ✨ Recent Updates
 
@@ -37,15 +36,9 @@ A modern, responsive portfolio website showcasing professional experience, proje
 
 There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/8b32876c-c798-44db-bfa0-564c514bee4c) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repo and work locally using your own IDE. Push changes to update the repository.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -157,12 +150,16 @@ This project is built with modern web technologies:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/8b32876c-c798-44db-bfa0-564c514bee4c) and click on Share -> Publish.
+Build the project and deploy to your preferred hosting platform:
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
+
+Then deploy the `dist` folder to your hosting service.
+
+## Can I connect a custom domain to my project?
 
 Yes, you can!
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+To connect a custom domain, configure your hosting platform's domain settings and update your DNS records to point to your hosting service.
